@@ -1,13 +1,16 @@
 from app import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
+from app import loginManager
+from hashlib import md5
 
-
+#region Table Models
 class Faculty(db.Model):
     __tablename__ = 'faculty'
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), index=True, unique=True)
-    groups = db.relationship('Group', lazy='dynamic')
+    '''group = db.relationship('Group', lazy='dynamic')'''
 
     def __init__(self, name):
         self.name = name
@@ -165,7 +168,7 @@ class LabworkDeadline(db.Model):
     def __repr__(self):
         return f""
 
-class User(db.Model):
+class User(UserMixin, db.Model):
     __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -173,7 +176,18 @@ class User(db.Model):
     hash = db.Column(db.String(256), unique=True)
 
     def set_password(self, password):
-        self.password_hash = generate_password_hash(password)
+        self.hash = generate_password_hash(password)
 
     def check_password(self, password):
-        return check_password_hash(self.password_hash, password)
+        return check_password_hash(self.hash, password)
+
+    def avatar(self, size):
+        digest = md5(self.login.lower().encode('utf-8')).hexdigest()
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
+            digest, size)
+
+#endregion
+
+@loginManager.user_loader
+def load_user(id):
+    return User.query.get(int(id))
