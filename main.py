@@ -1,6 +1,9 @@
 from app import app, db
-from app.models import User, Post
+from app.models import User
 
 @app.shell_context_processor
 def make_shell_context():
-    return {'db': db, 'User': User, 'Post': Post}
+    return {'db': db, 'User': User}
+
+if __name__ == '__main__':
+    app.run(use_debugger=False, use_reloader=False, passthrough_errors=True)

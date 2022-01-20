@@ -1,0 +1,14 @@
+.background {
+    background-image: url("img/violetBG_full.png");
+    background-size:     cover;          
+    background-repeat:   no-repeat;
+    background-position: center center; 
+}
+
+.foreground {
+    background-image: url("img/bgWhite.png");
+    background-size:     cover;          
+    background-repeat:   no-repeat;
+    background-position: center center; 
+    min-height: 600px;
+}

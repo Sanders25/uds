@@ -1,8 +1,10 @@
-from app import db
+from calendar import c
+from app import db, adminManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from app import loginManager
 from hashlib import md5
+from flask_admin.contrib.sqla import ModelView
 
 #region Table Models
 class Faculty(db.Model):
@@ -10,12 +12,9 @@ class Faculty(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), index=True, unique=True)
-    '''group = db.relationship('Group', lazy='dynamic')'''
 
-    def __init__(self, name):
-        self.name = name
     def __repr__(self):
-        return '<Faculty {}>'.format(self.name)
+        return '№ {} - инст. {}'.format(self.id, self.name)
 
 class Edgroup(db.Model):
     __tablename__ = 'edgroup'
@@ -24,33 +23,15 @@ class Edgroup(db.Model):
     course = db.Column(db.Integer)
     faculty = db.Column(db.Integer, db.ForeignKey('faculty.id'))
 
-    def __init__(self, course, faculty):
-        self.course = course
-        self.faculty = faculty
+    faculties = db.relationship('Faculty')
+    students = db.relationship('Student', lazy='dynamic')
+
     def __repr__(self):
-        return '<Edgroup {}, faculty {}>'.format(self.course, self.faculty)
+        return '№ {}, инст. {}'.format(self.id, self.faculty)
 
-class Subject(db.Model):
-    __tablename__ = 'subject'
-
-    name = db.Column(db.String(100), primary_key=True)
-
-    def __init__(self, name):
-        self.name = name
-    def __repr__(self):
-        return f""
-
-class AssignedClass(db.Model):
-    __tablename__ = 'assignedclass'
-
-    edgroup = db.Column(db.String(10), db.ForeignKey('edgroup.id'), primary_key=True)
-    subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True)
-
-    def __init__(self, edgroup, subject):
-        self.edgroup = edgroup                  
-        self.subject = subject                     
-    def __repr__(self):
-        return f""
+class EdgroupView(ModelView):
+    column_display_pk = True
+    form_columns = ['id', 'faculties', 'course']
 
 class Student(db.Model):
     __tablename__ = 'student'
@@ -61,119 +42,171 @@ class Student(db.Model):
     education = db.Column(db.String(50))
     edgroup = db.Column(db.String(10), db.ForeignKey('edgroup.id'))
 
-    def __init__(self, id, name, grants,education, edgroup):
-        self.id = id
-        self.name = name
-        self.grants = grants
-        self.education = education
-        self.edgroup = edgroup
+    group = db.relationship("Edgroup", backref="student_groups")
+
     def __repr__(self):
-        return f""
+        return 'Зач. {}, гр. {}'.format(self.id, self.edgroup)
+
+class StudentView(ModelView):
+    form_columns = ['name', 'group']
+
+class Subject(db.Model):
+    __tablename__ = 'subject'
+
+    name = db.Column(db.String(100), primary_key=True)
+
+    def __repr__(self):
+        return '{}'.format(self.name)
+
+class SubjectView(ModelView):
+    column_display_pk = True
+    form_columns = ['name']
+    column_hide_backrefs = False
+
+class AssignedClass(db.Model):
+    __tablename__ = 'assignedclass'
+
+    edgroup = db.Column(db.String(10), db.ForeignKey('edgroup.id'), primary_key=True)
+    subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True)
+
+    groups = db.relationship('Edgroup')
+    subjects = db.relationship('Subject')
+               
+    def __repr__(self):
+        return '№ гр. {}, {}'.format(self.edgroup, self.subject)
+
+class AssignedClassView(ModelView):
+    column_display_pk = True
+    form_columns = ['groups', 'subjects']
 
 class Test(db.Model):
     __tablename__ = 'test'
 
-    id = db.Column(db.Integer, primary_key=True, unique=True)
-    subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True, unique=True) 
-    db.relationship('TestDeadline', lazy='dynamic')
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True) 
 
-    def __init__(self, id, subject):
-        self.id = id
-        self.subject = subject
+    subjects = db.relationship('Subject')
+
     def __repr__(self):
-        return f""
+        return '№ {}, {}'.format(self.id, self.subject)
+
+class TestView(ModelView):
+    column_display_pk = True
+    form_columns = ['id', 'subjects']
 
 class Labwork(db.Model):
     __tablename__ = 'labwork'
 
-    id = db.Column(db.Integer, primary_key=True, unique=True)
-    subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True)
 
-    def __init__(self, id, subject):
-        self.id = id
-        self.subject = subject
+    subjects = db.relationship('Subject')
+
     def __repr__(self):
-        return f""
+        return '№ {}, {}'.format(self.id, self.subject)
+
+class LabworkView(ModelView):
+    column_display_pk = True
+    form_columns = ['id', 'subjects']
+    column_hide_backrefs = False
 
 class TestDeadline(db.Model):
     __tablename__ = 'testdeadline'
 
-    id = db.Column(db.Integer, db.ForeignKey('test.id'), primary_key=True)      
-    subject = db.Column(db.String(50), db.ForeignKey('test.subject'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)      
+    subject = db.Column(db.String(50), primary_key=True)
     edgroup = db.Column(db.String(10), db.ForeignKey('edgroup.id'), primary_key=True)
     deadline = db.Column(db.DateTime)
 
-    '''__table_args__ = (
-        db.ForeignKeyConstraint(['id'], ['test.id'], name='fk_testdl_test_id'),
-        db.ForeignKeyConstraint(['subject'], ['test.subject'], name='fk_testdl_test_subj')
-    )'''
+    subjects = db.relationship('Test')
+    groups = db.relationship('Edgroup')
 
-    def __init__(self, id, subject, edgroup):
-        self.id = id
-        self.subject = subject
-        self.edgroup = edgroup
+    __table_args__ = (
+        db.ForeignKeyConstraint([id, subject], [Test.id, Test.subject]), {}
+    )
+
     def __repr__(self):
-        return f""
+        return '{}, {}, {}, {}'.format(self.id, self.subject, self.edgroup, self.deadline)
 
+class TestDeadlineView(ModelView):
+    column_display_pk = True
+    form_columns = ['id', 'subjects', 'groups', 'deadline']
+    column_hide_backrefs = False
 
 class TestPass(db.Model):
     __tablename__ = 'testpass'
-    id = db.Column(db.Integer, db.ForeignKey('test.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
     studentid = db.Column(db.Integer, db.ForeignKey('student.id'), primary_key=True)
-    subject = db.Column(db.String(50), db.ForeignKey('test.subject'), primary_key=True)
+    subject = db.Column(db.String(50), primary_key=True)
+    mark = db.Column(db.Integer, nullable=True)
 
-    '''__table_args__ = (
-        db.ForeignKeyConstraint(['id'], ['test.id'], name='fk_testpass_test_id'),
-        db.ForeignKeyConstraint(['subject'], ['test.subject'], name='fk_testpass_test_subj')
-    )'''
+    students = db.relationship('Student')
+    subjects = db.relationship('Test')
 
-    def __init__(self, id, studentid, subject):
-        self.id = id
-        self.studentid = studentid
-        self.subject = subject
+    __table_args__ = (
+        db.ForeignKeyConstraint([id, subject], [Test.id, Test.subject]), {}
+    )
+
     def __repr__(self):
-        return f""
+        return '{}, {}, {}, {}'.format(self.id, self.studentid, self.subject, self.mark)
+
+class TestPassView(ModelView):
+    column_display_pk = True
+    form_columns = ['id', 'students', 'subjects', 'mark']
+    column_hide_backrefs = False
 
 class LabworkPass(db.Model):
     __tablename__ = 'labworkpass'
 
-    id = db.Column(db.Integer, db.ForeignKey('labwork.id'), primary_key=True)
-    subject = db.Column(db.String(50), db.ForeignKey('labwork.subject'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(50), primary_key=True)
     studentid = db.Column(db.Integer, db.ForeignKey('student.id'), primary_key=True)
-    mark = db.Column(db.Integer)
+    mark = db.Column(db.Integer, nullable=True)
 
-    def __init__(self, id, subject, studentid, mark):
-        self.id = id
-        self.studentid = studentid
-        self.subject = subject
-        self.mark = mark
+    students = db.relationship('Student')
+    subjects = db.relationship('Labwork')
+
+    __table_args__ = (
+        db.ForeignKeyConstraint([id, subject], [Labwork.id, Labwork.subject]), {}
+    )
+
     def __repr__(self):
-        return f""
+        return '{}, {}, {}, {}'.format(self.id, self.studentid, self.subject, self.mark)
 
+class LabworkPassView(ModelView):
+    column_display_pk = True
+    form_columns = ['id',  'subjects', 'students', 'mark']
+    column_hide_backrefs = False
 
 class LabworkDeadline(db.Model):
     __tablename__ = 'labworkdeadline'
 
-    id = db.Column(db.Integer, db.ForeignKey('labwork.id'), primary_key=True)
-    subject = db.Column(db.String(100), db.ForeignKey('labwork.subject'), primary_key=True)
-    edgroupId = db.Column(db.String(10), db.ForeignKey('edgroup.id'), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    subject = db.Column(db.String(100), primary_key=True)
+    edgroup = db.Column(db.String(10), db.ForeignKey('edgroup.id'), primary_key=True)
     deadline = db.Column(db.DateTime)
 
-    def __init__(self, id, subject, edgroupId, deadline):
-        self.id = id
-        self.subject = subject
-        self.edgroupId = edgroupId
-        self.deadline = deadline
+    subjects = db.relationship('Labwork')
+    groups = db.relationship('Edgroup')
+
+    __table_args__ = (
+        db.ForeignKeyConstraint([id, subject], [Labwork.id, Labwork.subject]), {}
+    )
 
     def __repr__(self):
-        return f""
+        return '{}, {}, {}, {}'.format(self.id, self.subject, self.edgroup, self.deadline)
+
+class LabworkDeadlineView(ModelView):
+    column_display_pk = True
+    form_columns = ['id',  'subjects', 'groups', 'deadline']
+    column_hide_backrefs = False
 
 class User(UserMixin, db.Model):
-    __tablename__ = 'user'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     login = db.Column(db.String(50), unique=True)
     hash = db.Column(db.String(256), unique=True)
+    role = db.Column(db.String(50))
 
     def set_password(self, password):
         self.hash = generate_password_hash(password)
@@ -191,3 +224,16 @@ class User(UserMixin, db.Model):
 @loginManager.user_loader
 def load_user(id):
     return User.query.get(int(id))
+
+adminManager.add_view(ModelView(User, db.session))
+adminManager.add_view(EdgroupView(Edgroup, db.session))
+adminManager.add_view(StudentView(Student, db.session))
+adminManager.add_view(SubjectView(Subject, db.session))
+adminManager.add_view(AssignedClassView(AssignedClass, db.session))
+adminManager.add_view(TestView(Test, db.session))
+adminManager.add_view(LabworkView(Labwork, db.session))
+adminManager.add_view(TestDeadlineView(TestDeadline, db.session))
+adminManager.add_view(TestPassView(TestPass, db.session))
+adminManager.add_view(LabworkDeadlineView(LabworkDeadline, db.session))
+adminManager.add_view(LabworkPassView(LabworkPass, db.session))
+
