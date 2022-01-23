@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
+from re import S
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from app.forms import LoginForm, RegisterForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import User
+from app.models import LabworkDeadline, User, Student, Subject, Labwork, Test, AssignedClass, LabworkDeadline, TestDeadline
 from werkzeug.urls import url_parse
-import sys
 
 @app.route('/')
 @app.route('/index')
@@ -106,14 +106,29 @@ def staff_manage():
 
 #region studentRoutes
 
-@app.route('/student_profile/')
+@app.route('/student_profile')
 @login_required
 def student_profile():
-    return render_template('student/student_profile.html', title="Профиль")
+    user = User.query.filter_by(login=current_user.login).first()
+    student = Student.query.filter(Student.userId == user.id).first()
+    return render_template('student/student_profile.html', title="Профиль", group=student.edgroup, student=student, user=user, id=student.id, name=student.name)
 
 @app.route('/student_tasks')
 @login_required
 def student_tasks():
-    return render_template('student/student_tasks.html', title="Задания")
+    user = User.query.filter_by(login=current_user.login).first()
+    student = Student.query.filter(Student.userId == user.id).first()
+
+    #subq = db.session.query(LabworkDeadline.id, LabworkDeadline.edgroup, LabworkDeadline.deadline, LabworkDeadline.subject).filter(LabworkDeadline.edgroup == student.edgroup).distinct().all()
+    subq = db.session.query(LabworkDeadline.id, LabworkDeadline.edgroup, LabworkDeadline.deadline, LabworkDeadline.subject).filter(LabworkDeadline.edgroup == student.edgroup).subquery('subq')
+    labworks = db.session.query(subq, Labwork.name).join(Labwork).all()
+
+    #for i in subq:
+    #    print(i)
+
+    subq = db.session.query(TestDeadline.id, TestDeadline.edgroup, TestDeadline.deadline).filter(TestDeadline.edgroup == student.edgroup).distinct().subquery('subq')
+    tests = db.session.query(subq, Test.name, Test.subject).join(Test).all()
+
+    return render_template('student/student_tasks.html', title="Задания", labworks=labworks, tests=tests)
 
 #endregion

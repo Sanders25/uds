@@ -2,6 +2,11 @@
 
 {% block content %}
 
-
+<table>
+        <tr><img src="{{user.avatar(64) }}"></tr>
+        <tr><h3>ФИО: {{name}}</h3></tr>
+        <tr><h3>Группа: {{group}}</h3></tr>
+        <tr><h3>№ зачётки: {{id}}</h3></tr>
+</table>
 
 {% endblock %}

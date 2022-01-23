@@ -1,6 +1,38 @@
 {% extends 'bases/studentBase.html' %}
 
 {% block content %}
-    
+
+<h1>Задания</h1>
+<table border="1">
+    <caption>Лабораторные работы</caption>
+    <th>№ задания</th>
+    <th>Дисциплина</th>
+    <th>Название работы</th>
+    <th>Срок сдачи</th>
+    {% for lab in labworks %}
+    <tr>
+        <td>{{lab.id}}</td>
+        <td>{{lab.subject}}</td>
+        <td>{{lab.name}}</td>
+        <td>{{lab.deadline}}</td>
+    </tr>
+    {% endfor %}    
+</table>
+<hr>
+<table border="1">
+    <caption>Контрольные работы</caption>
+    <th>№ задания</th>
+    <th>Дисциплина</th>
+    <th>Название работы</th>
+    <th>Срок проведения</th>
+    {% for test in tests %}
+    <tr>
+        <td>{{test.id}}</td>
+        <td>{{test.subject}}</td>
+        <td>{{test.name}}</td>
+        <td>{{test.deadline}}</td>
+    </tr>
+    {% endfor %}    
+</table>
 
 {% endblock %}

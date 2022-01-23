@@ -6,7 +6,8 @@
 }
 
 .foreground {
-    background-image: url("img/bgWhite.png");
+    /*background-image: url("img/bgWhite.png");*/
+    background-color: azure;
     background-size:     cover;          
     background-repeat:   no-repeat;
     background-position: center center; 

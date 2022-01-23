@@ -2,6 +2,7 @@ from calendar import c
 from app import db, adminManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from flask_admin import BaseView, expose, AdminIndexView, Admin
 from app import loginManager
 from hashlib import md5
 from flask_admin.contrib.sqla import ModelView
@@ -41,6 +42,7 @@ class Student(db.Model):
     grants = db.Column(db.Integer)
     education = db.Column(db.String(50))
     edgroup = db.Column(db.String(10), db.ForeignKey('edgroup.id'))
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     group = db.relationship("Edgroup", backref="student_groups")
 
@@ -84,6 +86,7 @@ class Test(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True) 
+    name = db.Column(db.String(100))
 
     subjects = db.relationship('Subject')
 
@@ -92,13 +95,14 @@ class Test(db.Model):
 
 class TestView(ModelView):
     column_display_pk = True
-    form_columns = ['id', 'subjects']
+    form_columns = ['id', 'subjects', 'name']
 
 class Labwork(db.Model):
     __tablename__ = 'labwork'
 
     id = db.Column(db.Integer, primary_key=True)
     subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True)
+    name = db.Column(db.String(100))
 
     subjects = db.relationship('Subject')
 
@@ -107,7 +111,7 @@ class Labwork(db.Model):
 
 class LabworkView(ModelView):
     column_display_pk = True
-    form_columns = ['id', 'subjects']
+    form_columns = ['id', 'subjects', 'name']
     column_hide_backrefs = False
 
 class TestDeadline(db.Model):
@@ -225,6 +229,12 @@ class User(UserMixin, db.Model):
 def load_user(id):
     return User.query.get(int(id))
 
+class DbAdminHomeView(AdminIndexView):
+    @expose('/')
+    def index(self):
+        return self.render('admin/db_admin_main.html')
+
+adminManager.add_view(DbAdminHomeView(name='Панель управления', endpoint='db_admin_main'))
 adminManager.add_view(ModelView(User, db.session))
 adminManager.add_view(EdgroupView(Edgroup, db.session))
 adminManager.add_view(StudentView(Student, db.session))
@@ -236,4 +246,5 @@ adminManager.add_view(TestDeadlineView(TestDeadline, db.session))
 adminManager.add_view(TestPassView(TestPass, db.session))
 adminManager.add_view(LabworkDeadlineView(LabworkDeadline, db.session))
 adminManager.add_view(LabworkPassView(LabworkPass, db.session))
+
 
