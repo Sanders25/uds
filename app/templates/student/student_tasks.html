@@ -9,12 +9,14 @@
     <th>Дисциплина</th>
     <th>Название работы</th>
     <th>Срок сдачи</th>
+    <th>Преподаватель</th>
     {% for lab in labworks %}
     <tr>
-        <td>{{lab.id}}</td>
+        <td>{{lab.labworkNum}}</td>
         <td>{{lab.subject}}</td>
-        <td>{{lab.name}}</td>
+        <td>{{lab.labworkName}}</td>
         <td>{{lab.deadline}}</td>
+        <td>{{lab.instructor}}</td>
     </tr>
     {% endfor %}    
 </table>
@@ -25,12 +27,14 @@
     <th>Дисциплина</th>
     <th>Название работы</th>
     <th>Срок проведения</th>
+    <th>Преподаватель</th>
     {% for test in tests %}
     <tr>
-        <td>{{test.id}}</td>
+        <td>{{test.testNum}}</td>
         <td>{{test.subject}}</td>
-        <td>{{test.name}}</td>
+        <td>{{test.testName}}</td>
         <td>{{test.deadline}}</td>
+        <td>{{test.instructor}}</td>
     </tr>
     {% endfor %}    
 </table>

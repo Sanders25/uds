@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
-from re import S
+from re import S, T
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
 from app.forms import LoginForm, RegisterForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import LabworkDeadline, User, Student, Subject, Labwork, Test, AssignedClass, LabworkDeadline, TestDeadline
+from app.models import LabworkDeadline, User, Student, Subject, Labwork, Test, AssignedClass, LabworkDeadline, TestDeadline, Staff
 from werkzeug.urls import url_parse
+from sqlalchemy.sql.expression import literal
 
 @app.route('/')
 @app.route('/index')
@@ -95,12 +96,15 @@ def db_admin_main():
 @app.route('/staff_profile/')
 @login_required
 def staff_profile():
-    return render_template('staff/staff_profile.html')
+    user = User.query.filter_by(login=current_user.login).first()
+    staff = Staff.query.filter(Staff.userId == user.id).first()
+    print(staff)
+    return render_template('staff/staff_profile.html', title='Профиль', faculty=staff.faculty, user=user, name=staff.name)
 
 @app.route('/staff_manage')
 @login_required
 def staff_manage():
-    return render_template('admin/staff_manage.html')
+    return render_template('staff/staff_manage.html')
 
 #endregion
 
@@ -119,15 +123,22 @@ def student_tasks():
     user = User.query.filter_by(login=current_user.login).first()
     student = Student.query.filter(Student.userId == user.id).first()
 
-    #subq = db.session.query(LabworkDeadline.id, LabworkDeadline.edgroup, LabworkDeadline.deadline, LabworkDeadline.subject).filter(LabworkDeadline.edgroup == student.edgroup).distinct().all()
-    subq = db.session.query(LabworkDeadline.id, LabworkDeadline.edgroup, LabworkDeadline.deadline, LabworkDeadline.subject).filter(LabworkDeadline.edgroup == student.edgroup).subquery('subq')
-    labworks = db.session.query(subq, Labwork.name).join(Labwork).all()
+    #? Запрос, возвращающий информацию о лабораторных, идущих у данного студента
 
-    #for i in subq:
-    #    print(i)
-
-    subq = db.session.query(TestDeadline.id, TestDeadline.edgroup, TestDeadline.deadline).filter(TestDeadline.edgroup == student.edgroup).distinct().subquery('subq')
-    tests = db.session.query(subq, Test.name, Test.subject).join(Test).all()
+    studentLabworks = db.session.query(LabworkDeadline).filter(LabworkDeadline.edgroup == student.edgroup).subquery('studentLabworks')
+    labworkInfo = db.session.query(studentLabworks, Labwork.id.label('labworkNum'), Labwork.name.label('labworkName')).join(Labwork).filter(Labwork.id == studentLabworks.c.id, Labwork.subject == studentLabworks.c.subject).subquery('labworkInfo')
+    #? Запрос, возвращающий имена преподавателей предметов, идущих у данного студента
+    labworks = db.session.query(labworkInfo, Staff.name.label('instructor')).join(Subject, labworkInfo.c.subject == Subject.name).join(Staff, Subject.staffId == Staff.id).all()
+    #?
+    #? Запрос, возвращающий информацию о контрольных, идущих у данного студента
+    studentTests = db.session.query(TestDeadline).filter(TestDeadline.edgroup == student.edgroup).subquery('studentTests')
+    testInfo = db.session.query(studentTests, Test.id.label('testNum'), Test.name.label('testName')).join(Test).filter(Test.id == studentTests.c.id, Test.subject == studentTests.c.subject).subquery('testInfo')
+    tests = db.session.query(testInfo, Staff.name.label('instructor')).join(Subject, testInfo.c.subject == Subject.name).join(Staff, Subject.staffId == Staff.id).all()
+    #?
+    
+    #? Объединение запросов
+    #tasks = db.session.query(labworks, tests).join(tests, literal(True)).all()
+    #?
 
     return render_template('student/student_tasks.html', title="Задания", labworks=labworks, tests=tests)
 

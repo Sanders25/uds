@@ -45,24 +45,28 @@ class Student(db.Model):
     userId = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     group = db.relationship("Edgroup", backref="student_groups")
+    users = db.relationship("User")
 
     def __repr__(self):
         return 'Зач. {}, гр. {}'.format(self.id, self.edgroup)
 
 class StudentView(ModelView):
-    form_columns = ['name', 'group']
+    form_columns = ['name', 'group','users']
 
 class Subject(db.Model):
     __tablename__ = 'subject'
 
     name = db.Column(db.String(100), primary_key=True)
+    staffId = db.Column(db.Integer, db.ForeignKey('staff.id'))
+
+    instructors = db.relationship("Staff")
 
     def __repr__(self):
         return '{}'.format(self.name)
 
 class SubjectView(ModelView):
     column_display_pk = True
-    form_columns = ['name']
+    form_columns = ['name', 'instructors']
     column_hide_backrefs = False
 
 class AssignedClass(db.Model):
@@ -205,6 +209,25 @@ class LabworkDeadlineView(ModelView):
     form_columns = ['id',  'subjects', 'groups', 'deadline']
     column_hide_backrefs = False
 
+class Staff(db.Model):
+    __tablename__ = 'staff'
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100))
+    faculty = db.Column(db.Integer, db.ForeignKey('faculty.id'))
+    userId = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    faculties = db.relationship('Faculty', backref='staff_fac')
+    users = db.relationship('User')
+
+    def __repr__(self):
+        return '{}, {}, {}'.format(self.id, self.name, self.faculty)
+
+class StaffView(ModelView):
+    column_display_pk = True
+    form_columns = ['id',  'name', 'faculties', 'users']
+    column_hide_backrefs = False
+
 class User(UserMixin, db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -222,6 +245,9 @@ class User(UserMixin, db.Model):
         digest = md5(self.login.lower().encode('utf-8')).hexdigest()
         return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
             digest, size)
+
+    def __repr__(self):
+        return '{}, {}, {}'.format(self.id, self.login, self.role)
 
 #endregion
 
@@ -246,5 +272,7 @@ adminManager.add_view(TestDeadlineView(TestDeadline, db.session))
 adminManager.add_view(TestPassView(TestPass, db.session))
 adminManager.add_view(LabworkDeadlineView(LabworkDeadline, db.session))
 adminManager.add_view(LabworkPassView(LabworkPass, db.session))
+adminManager.add_view(StaffView(Staff, db.session))
+
 
 
