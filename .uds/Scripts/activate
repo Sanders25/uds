@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV="E:\Projects\Python\uds\.uds"
+VIRTUAL_ENV="C:\Users\HP\Documents\Repos\uds\.uds"
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
