@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h3>{{ subj }} {{ studentName }}</h3>
+<h3>{{ subj }} - {{ studentName }}</h3>
 
 <table border="1">
     <th>№ работы</th>
@@ -23,7 +23,7 @@
 
     {% for t in tests %}
     <tr>
-        <td>{{t.num}}</td>
+        <td>{{t.testNum}}</td>
         <td>{{t.testName}}</td>
         <td>{{t.mark}}</td>
     </tr>

@@ -1,0 +1,12 @@
+{% extends 'bases/studentBase.html' %}
+
+{% block content %}
+
+<table>
+        <tr><img src="{{user.avatar(64) }}"></tr>
+        <tr><h3>ФИО: {{staffInfo.name}}</h3></tr>
+        <tr><h3>Факультет: {{staffInfo.faculty}}</h3></tr>
+        <tr><h3>Преподаёт: {{subject}}</h3></tr>
+</table>
+
+{% endblock %}

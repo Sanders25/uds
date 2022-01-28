@@ -6,6 +6,7 @@ from flask_admin import BaseView, expose, AdminIndexView, Admin
 from app import loginManager
 from hashlib import md5
 from flask_admin.contrib.sqla import ModelView
+from sqlalchemy.orm import validates
 
 #region Table Models
 class Faculty(db.Model):

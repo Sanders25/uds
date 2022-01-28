@@ -16,7 +16,7 @@
         <td>{{lab.subject}}</td>
         <td>{{lab.labworkName}}</td>
         <td>{{lab.deadline}}</td>
-        <td>{{lab.instructor}}</td>
+        <td><a href="{{url_for('ShowInstructorProfile', instructor=lab.instructor)}}">{{lab.instructor}}</a></td>
     </tr>
     {% endfor %}    
 </table>
@@ -34,7 +34,7 @@
         <td>{{test.subject}}</td>
         <td>{{test.testName}}</td>
         <td>{{test.deadline}}</td>
-        <td>{{test.instructor}}</td>
+        <td><a href="{{url_for('ShowInstructorProfile', instructor=test.instructor)}}">{{test.instructor}}</a></td>
     </tr>
     {% endfor %}    
 </table>

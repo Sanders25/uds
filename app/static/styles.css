@@ -1,5 +1,5 @@
 .background {
-    background-image: url("img/violetBG_full.png");
+    background-image: url("img/source.png");
     background-size:     cover;          
     background-repeat:   no-repeat;
     background-position: center center; 
@@ -7,7 +7,7 @@
 
 .foreground {
     /*background-image: url("img/bgWhite.png");*/
-    background-color: azure;
+    background-color: rgb(247, 247, 247);
     background-size:     cover;          
     background-repeat:   no-repeat;
     background-position: center center; 

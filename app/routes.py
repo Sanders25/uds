@@ -140,16 +140,24 @@ def staff_manage():
 def ShowStudentTasks(student, subj, group):
     studentName = Student.query.with_entities(Student.name).filter(Student.id == student).all()
     studentName = [n for n, in studentName]
-    labworks = db.session.query(LabworkPass).filter(LabworkPass.studentid == student, LabworkPass.subject == subj).all()
-    grTests = TestDeadline.query.with_entities(TestDeadline.id.label('testNum'), Test.name.label('testName'), TestDeadline.subject.label('testSubject'))\
-    .join(Test).filter(TestDeadline.subject == subj, TestDeadline.edgroup == group).subquery('grTests')
 
-    tests = db.session.query(TestPass, TestPass.id.label('num'), TestPass.subject, grTests.c.testName, TestPass.mark).filter(TestPass.id == grTests.c.testNum,\
-                             TestPass.subject == grTests.c.testSubject, TestPass.studentid == student).all()
+    labworks = LabworkPass.query.join(Labwork).with_entities(Labwork.id.label('labNum'), Labwork.name.label('labName'), LabworkPass.mark).filter(LabworkPass.subject == subj, LabworkPass.studentid == student).all()
 
+
+    #? Все работы, приписанные данному студенту
+    #grTests = TestDeadline.query.with_entities(TestDeadline.id.label('testNum'), Test.name.label('testName'), TestDeadline.subject.label('testSubject'))\
+    #.join(Test).filter(TestDeadline.subject == subj, TestDeadline.edgroup == group).subquery('grTests')
+    #?
+    #? Оценки, полученные за данные работы
+    marks = TestPass.query.join(Test).with_entities(Test.id.label('testNum'), Test.name.label('testName'), TestPass.mark).filter(TestPass.subject == subj, TestPass.studentid == student).subquery()
+    deadlines = TestDeadline.query.join(Test).with_entities(Test.id, TestDeadline.deadline).filter(TestDeadline.subject == subj, TestDeadline.edgroup == group).subquery()
+    tests = db.session.query(deadlines, marks.c.testNum, marks.c.testName, marks.c.mark).join(marks, marks.c.testNum == deadlines.c.id).all()
+
+    #?        
+    
     print(tests)
 
-    return render_template('/staff/studentTasks.html', labworks=labworks, tests=tests, subj=subj, studentName=studentName)
+    return render_template('/staff/staffStudentTasks.html', labworks=labworks, tests=tests, subj=subj, studentName=studentName[0])
 #endregion
 
 #region studentRoutes
@@ -186,4 +194,13 @@ def student_tasks():
 
     return render_template('student/student_tasks.html', title="Задания", labworks=labworks, tests=tests)
 
+@app.route('/student_tasks/<instructor>')
+@login_required
+def ShowInstructorProfile(instructor):
+
+    staffInfo = Staff.query.filter(Staff.name == instructor).first()
+    user = User.query.filter(Staff.userId == User.id).first()
+    subject = Subject.query.filter(Subject.staffId == staffInfo.id).first()
+        
+    return render_template('student/instructor_profile.html', title="Преподаватель", staffInfo=staffInfo, user=user, subject=subject)
 #endregion

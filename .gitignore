@@ -168,7 +168,6 @@ cython_debug/
 .uds/share/jupyter/kernels/python3/logo-32x32.png
 .uds/share/jupyter/kernels/python3/logo-64x64.png
 .uds/share/man/man1/ipython.1
-.vscode/launch.json
 app/__pycache__/__init__.cpython-310.pyc
 __pycache__/main.cpython-310.pyc
 .uds/pyvenv.cfg
