@@ -2,11 +2,14 @@
 from re import S, T
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegisterForm
+from app.forms import LoginForm, RegisterForm, GroupSearchForm
 from flask_login import current_user, login_user, logout_user, login_required
-from app.models import LabworkDeadline, User, Student, Subject, Labwork, Test, AssignedClass, LabworkDeadline, TestDeadline, Staff
+from app.models import LabworkDeadline, User, Student, Subject, Labwork, Test, AssignedClass,\
+                         LabworkDeadline, TestDeadline, Staff, Edgroup, LabworkPass, TestPass
 from werkzeug.urls import url_parse
 from sqlalchemy.sql.expression import literal
+from sqlalchemy.orm import load_only
+
 
 @app.route('/')
 @app.route('/index')
@@ -101,11 +104,52 @@ def staff_profile():
     print(staff)
     return render_template('staff/staff_profile.html', title='Профиль', faculty=staff.faculty, user=user, name=staff.name)
 
-@app.route('/staff_manage')
+@app.route('/staff_manage', methods=['GET', 'POST'])
 @login_required
 def staff_manage():
-    return render_template('staff/staff_manage.html')
+    user = User.query.filter_by(login=current_user.login).first()
+    staffInfo = Staff.query.filter(Staff.userId == user.id).first()
 
+    #? Запрос, возвращающий предмет, который ведёт данный преподватель
+    subj = db.session.query(Subject).filter(Subject.staffId == staffInfo.id).first()
+    #?
+    #? Запрос, возвращающий группы, у которых данный преподватель ведёт предмет subj
+    groups = db.session.query(AssignedClass.edgroup).filter(AssignedClass.subject == subj.name).all()
+    #?
+
+    groups = [r for r, in groups]
+    #form = GroupSearchForm()
+    #form.choices = [groups]
+
+    selectedGroup = groups[0]
+
+    if request.method == "POST":
+        selectedGroup = request.form['groupSelect']
+        
+    # TODO: Здесь выводится список группы, где каждый студент кликабелен. Можно 
+    #* также подсчитывать количество сданных работ для каждого студента.
+    #* Нажимая на студента должны выводиться все работы для группы данного студента
+    # TODO
+
+    students = db.session.query(Student).filter(Student.edgroup == selectedGroup).all()
+    return render_template('staff/staff_manage.html', groups=groups, students=students, selectedGroup=selectedGroup, subj=subj.name)
+
+
+@app.route('/staff_manage/<subj>/<group>/<student>')
+@login_required
+def ShowStudentTasks(student, subj, group):
+    studentName = Student.query.with_entities(Student.name).filter(Student.id == student).all()
+    studentName = [n for n, in studentName]
+    labworks = db.session.query(LabworkPass).filter(LabworkPass.studentid == student, LabworkPass.subject == subj).all()
+    grTests = TestDeadline.query.with_entities(TestDeadline.id.label('testNum'), Test.name.label('testName'), TestDeadline.subject.label('testSubject'))\
+    .join(Test).filter(TestDeadline.subject == subj, TestDeadline.edgroup == group).subquery('grTests')
+
+    tests = db.session.query(TestPass, TestPass.id.label('num'), TestPass.subject, grTests.c.testName, TestPass.mark).filter(TestPass.id == grTests.c.testNum,\
+                             TestPass.subject == grTests.c.testSubject, TestPass.studentid == student).all()
+
+    print(tests)
+
+    return render_template('/staff/studentTasks.html', labworks=labworks, tests=tests, subj=subj, studentName=studentName)
 #endregion
 
 #region studentRoutes

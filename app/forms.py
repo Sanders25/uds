@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import DataRequired, EqualTo, ValidationError
 from app.models import User
 
@@ -19,5 +19,9 @@ class RegisterForm(FlaskForm):
         user = User.query.filter_by(login=login.data).first()
         if user is not None:
             raise ValidationError('Пожалуйста, используйте другой логин.')
+
+class GroupSearchForm(FlaskForm):
+    group = SelectField('group', choices=[])
+
 
     

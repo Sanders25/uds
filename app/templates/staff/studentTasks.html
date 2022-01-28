@@ -1,0 +1,34 @@
+{% extends 'bases/staffBase.html' %}
+
+{% block content %}
+
+<h3>{{ subj }} {{ studentName }}</h3>
+
+<table border="1">
+    <th>№ работы</th>
+    <th>Название</th>
+    <th>Оценка</th>
+
+    {% for l in labworks %}
+    <tr>
+        <td>{{l.id}}</td>
+    </tr>
+
+    {% endfor %}
+</table>
+<table border="1">
+    <th>№ работы</th>
+    <th>Название</th>
+    <th>Оценка</th>
+
+    {% for t in tests %}
+    <tr>
+        <td>{{t.num}}</td>
+        <td>{{t.testName}}</td>
+        <td>{{t.mark}}</td>
+    </tr>
+
+    {% endfor %}
+</table>
+
+{% endblock %}

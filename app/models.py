@@ -95,7 +95,7 @@ class Test(db.Model):
     subjects = db.relationship('Subject')
 
     def __repr__(self):
-        return '№ {}, {}'.format(self.id, self.subject)
+        return '№ {}:{} - {}'.format(self.id, self.subject, self.name)
 
 class TestView(ModelView):
     column_display_pk = True

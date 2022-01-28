@@ -3,5 +3,39 @@
 {% block content %}
 
 
+<form method="POST">
+    <select name="groupSelect" action="/">
+        <option value="{{groups[0]}}" selected>{{groups[0]}}</option>
+        {% for group in groups[1:] %}
+        <option value="{{group}}">{{group}}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Применить</button>
+</form>
+
+<h2>{{ selectedGroup }}</h2>
+<table>
+    <th>Студент</th>
+    {% for s in students %}
+    <tr>
+        <td><a href="{{ url_for('ShowStudentTasks', student=s.id, subj=subj, group=selectedGroup) }}">{{ s.name }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<script>
+        /*
+        function ready() {
+
+            let groupSelect = document.getElementById('groupSelect');
+
+            groupSelect.onchange = function()  {
+                group = groupSelect.value;
+                alert(group);
+            }
+        }
+        document.addEventListener("DOMContentLoaded", ready);
+        */
+</script>
 
 {% endblock %}
