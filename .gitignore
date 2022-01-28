@@ -171,3 +171,5 @@ cython_debug/
 .vscode/launch.json
 app/__pycache__/__init__.cpython-310.pyc
 __pycache__/main.cpython-310.pyc
+.uds/pyvenv.cfg
+migrations/
