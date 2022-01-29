@@ -13,7 +13,7 @@ class RegisterForm(FlaskForm):
     login = StringField('Логин', validators=[DataRequired()])
     password = PasswordField('Пароль', validators=[DataRequired()])
     password2 = PasswordField('Повторите пароль', validators=[DataRequired(), EqualTo('password')])
-    submit = SubmitField('Register')
+    submit = SubmitField('Зарегистрироваться')
 
     def validate_login(self, login):
         user = User.query.filter_by(login=login.data).first()
@@ -22,6 +22,12 @@ class RegisterForm(FlaskForm):
 
 class GroupSearchForm(FlaskForm):
     group = SelectField('group', choices=[])
+
+class EditTaskForm(FlaskForm):
+    taskId = StringField('Номер задания', validators=[DataRequired()])
+    taskName = StringField('Название', validators=[DataRequired()])
+    submit = SubmitField('Сохранить')
+
 
 
     

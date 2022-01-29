@@ -2,11 +2,27 @@
 
 {% block content %}
 
-<table>
-        <tr><img src="{{user.avatar(64) }}"></tr>
-        <tr><h3>ФИО: {{name}}</h3></tr>
-        <tr><h3>Группа: {{group}}</h3></tr>
-        <tr><h3>№ зачётки: {{id}}</h3></tr>
-</table>
+<body>
+    <div class="container">
+        <div class="student-profile">
+            <div class="user__header">
+                <div class="user__avatar"><img src="{{user.avatar(64) }}"></div>
+                    <h2 class="user__name">{{name}}</h2>
+            </div>
+            <p class="user__info">Институт:<span>Вычислительных систем и сетей</span></p>
+            <p class="user__info">Группа:<span>{{group}}</span></p>
+            <p class="user__info">Уровень подготовки:<span>Бакалавр</span></p>
+            <p class="user__info">Номер студенческого билета:<span>{{id}}</span></p>
+            <div class="user__contact">
+                <h3 class="user__contact__title">Контакты</h3>
+                <a  class="user__contact__email" href="mailto:User007@gmail.com">User007@gmail.com</a>
+                <a  class="user__contact__phone" href="tel:88005553535">8 800 555 35 35</a>
+            </div>
+        </div>
+    </div>
+
+
+
+    <script src="js/main.min.js"></script>
 
 {% endblock %}

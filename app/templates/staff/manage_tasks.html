@@ -1,0 +1,31 @@
+{% extends 'bases/staffBase.html' %}
+
+{% block content %}
+
+<table> 
+  {% for l in labs %}
+  <tr>
+    <td>{{l.id}}</td>
+    <td>{{l.name}}</td>
+    <td><a href="{{ url_for('EditLab', id=l.id, subject=subject) }}">Изменить</a></td>
+    <td><a href="{{ url_for('DeleteLab', id=l.id, subject=subject) }}">Удалить</a></td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td><a href="{{ url_for('AddLab', subject=subject) }}">Добавить</a></td>
+  </tr>
+  {% for t in tests %}
+  <tr>
+    <td>{{t.id}}</td>
+    <td>{{t.name}}</td>
+    <td><a href="{{ url_for('EditTest', id=t.id, subject=subject) }}">Изменить</a></td>
+    <td><a href="{{ url_for('DeleteTest', id=t.id, subject=subject) }}">Удалить</a></td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td><a href="{{ url_for('AddTest', subject=subject) }}">Добавить</a></td>
+  </tr>
+</table>
+
+
+{% endblock %}

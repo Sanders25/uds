@@ -1,0 +1,16 @@
+{% extends 'bases/staffBase.html' %}
+
+{% block content %}
+
+<form action="" method="POST" novalidate>
+  <p>
+    {{ form.taskId.label }}<br>
+    {{ form.taskId}}<br>
+    {{ form.taskName.label }}<br>
+    {{ form.taskName}}<br>
+    {{ form.submit() }}
+  </p>
+
+</form>
+
+{% endblock %}

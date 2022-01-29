@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+from imghdr import tests
 from re import S, T
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegisterForm, GroupSearchForm
+from app.forms import LoginForm, RegisterForm, GroupSearchForm, EditTaskForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import LabworkDeadline, User, Student, Subject, Labwork, Test, AssignedClass,\
                          LabworkDeadline, TestDeadline, Staff, Edgroup, LabworkPass, TestPass
 from werkzeug.urls import url_parse
+from sqlalchemy import func
 from sqlalchemy.sql.expression import literal
 from sqlalchemy.orm import load_only
 
@@ -152,12 +154,102 @@ def ShowStudentTasks(student, subj, group):
     marks = TestPass.query.join(Test).with_entities(Test.id.label('testNum'), Test.name.label('testName'), TestPass.mark).filter(TestPass.subject == subj, TestPass.studentid == student).subquery()
     deadlines = TestDeadline.query.join(Test).with_entities(Test.id, TestDeadline.deadline).filter(TestDeadline.subject == subj, TestDeadline.edgroup == group).subquery()
     tests = db.session.query(deadlines, marks.c.testNum, marks.c.testName, marks.c.mark).join(marks, marks.c.testNum == deadlines.c.id).all()
-
     #?        
-    
-    print(tests)
 
-    return render_template('/staff/staffStudentTasks.html', labworks=labworks, tests=tests, subj=subj, studentName=studentName[0])
+    return render_template('/staff/staff_stud_tasks.html', labworks=labworks, tests=tests, subj=subj, studentName=studentName[0])
+
+@app.route('/manage_tasks/')
+@login_required
+def ManageTasks():
+
+    user = db.session.query(Staff).filter(Staff.userId == current_user.id).first()
+    subject = Subject.query.filter(Subject.staffId == user.id).first()
+
+    labs = Labwork.query.filter(Labwork.subject == subject.name)
+    tests = Test.query.filter(Test.subject == subject.name)
+
+    return render_template('/staff/manage_tasks.html', labs=labs, tests=tests, subject=subject)
+
+@app.route('/edit_lab/<subject>/<id>')
+@login_required
+def EditLab(id, subject):
+
+    form = EditTaskForm();
+
+    lab = Labwork.query.filter(Labwork.id == id, Labwork.subject == subject).first()
+    form.id = lab.id
+    form.name = lab.name
+
+    if request.method == "POST":
+        lId = request.form['taskId']
+        lName = request.form['taskName']
+        db.session.query(Labwork).filter(Labwork.id == lId, Labwork.subject == subject).update({"id":(lId), "name":(lName)})
+        db.session.commit()
+        return redirect(url_for('ManageTasks'))
+
+    return render_template('/staff/edit_lab.html', form=form)
+
+@app.route('/edit_test/<subject>/<id>', methods=['GET', 'POST'])
+@login_required
+def EditTest(id, subject):
+    test = Test.query.filter(Test.id == id, Test.subject == subject).first()
+    form = EditTaskForm(taskId = test.id, taskName = test.name);
+
+    if request.method == "POST":
+        tId = request.form['taskId']
+        tName = request.form['taskName']
+        db.session.query(Test).filter(Test.id == tId, Test.subject == subject).update({"id":(tId), "name":(tName)})
+        db.session.commit()
+        return redirect(url_for('ManageTasks'))
+
+    return render_template('/staff/edit_test.html', form=form)
+
+@app.route('/add_test/<subject>', methods=['GET', 'POST'])
+@login_required
+def AddTest(subject):
+    test = db.session.query(func.max(Test.id)).filter(Test.subject == subject).first()
+    form = EditTaskForm(taskId = test[0] + 1);
+
+    if request.method == "POST":
+        tId = request.form['taskId']
+        tName = request.form['taskName']
+        t = Test(id=tId, name=tName, subject=subject)
+        db.session.add(t)
+        db.session.commit()
+        return redirect(url_for('ManageTasks'))
+
+    return render_template('/staff/add_test.html', form=form)
+
+@app.route('/add_lab/<subject>', methods=['GET', 'POST'])
+@login_required
+def AddLab(subject):
+    lab = Labwork.query.filter(func.max(Labwork.id), Labwork.subject == subject).first()
+    form = EditTaskForm(taskId = lab.id + 1);
+
+    if request.method == "POST":
+        tId = request.form['taskId']
+        tName = request.form['taskName']
+        l = Labwork.query.filter(id=tId, name=tName, subject=subject)
+        db.session.add(l)
+        db.session.commit()
+        return redirect(url_for('ManageTasks'))
+
+    return render_template('/staff/add_lab.html', form=form)
+
+@app.route('/delete_lab/<subject>/<id>', methods=['GET', 'POST'])
+@login_required
+def DeleteLab(subject, id):
+    l = Labwork.query.filter(Labwork.id == id, Labwork.subject == subject).first()
+    db.session.delete(l)
+    return redirect(url_for('ManageTasks'))
+
+@app.route('/delete_test/<subject>/<id>', methods=['GET', 'POST'])
+@login_required
+def DeleteTest(subject, id):
+    t = Test.query.filter(Test.id == id, Test.subject == subject).first()
+    db.session.delete(t)
+    db.session.commit()
+    return redirect(url_for('ManageTasks'))
 #endregion
 
 #region studentRoutes
