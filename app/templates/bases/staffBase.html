@@ -7,16 +7,19 @@
     </head>
 
     <body class="background">
-        <div class="foreground">
+        <div class="container">
            <!-- <h1> Пользователь <i><u>{{ current_user.login }}</u></i></h1>-->
             {% block content %}
             {% endblock %}
         </div>
-        <div style=background-color:white>
+        <br>
+        <div class="menu" style=background-color:white>
+            <span>
             <a href="{{url_for('staff_profile')}}">Профиль</a>
             <a href="{{url_for('staff_manage')}}">Учебный процесс</a>
             <a href="{{url_for('ManageTasks')}}">Задания</a>
             <a href="{{url_for('logout')}}">Выход</a>
+        </span>
         </div> 
     </body>
 </html>

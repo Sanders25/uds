@@ -3,12 +3,12 @@ from imghdr import tests
 from re import S, T
 from flask import render_template, flash, redirect, url_for, request
 from app import app, db
-from app.forms import LoginForm, RegisterForm, GroupSearchForm, EditTaskForm
+from app.forms import LoginForm, RegisterForm, GroupSearchForm, EditTaskForm, RoleSelectForm
 from flask_login import current_user, login_user, logout_user, login_required
 from app.models import LabworkDeadline, User, Student, Subject, Labwork, Test, AssignedClass,\
-                         LabworkDeadline, TestDeadline, Staff, Edgroup, LabworkPass, TestPass
+                         LabworkDeadline, TestDeadline, Staff, Edgroup, LabworkPass, TestPass, Faculty
 from werkzeug.urls import url_parse
-from sqlalchemy import func
+from sqlalchemy import between, func, select, and_, DateTime
 from sqlalchemy.sql.expression import literal
 from sqlalchemy.orm import load_only
 
@@ -84,10 +84,21 @@ def admin_subjects():
 def admin_groups():
     return render_template('admin/admin_groups.html')
     
-@app.route('/admin_accounts/')
+@app.route('/admin_accounts/', methods=['GET', 'POST'])
 @login_required
 def admin_accounts():
-    return render_template('admin/admin_accounts.html')
+
+    roles = ['Преподаватели', 'Студенты']
+    form = RoleSelectForm()
+    form.role.choices = roles
+    
+    users = User.query.all()
+
+    if request.method == "POST":
+        selectedRole = request.form['role']
+        selectedRole = 'Staff' if selectedRole == 'Преподаватели' else 'Student'
+
+    return render_template('admin/admin_accounts.html', roles=roles, form=form, users=users)
 
 @app.route('/db_admin_main')
 @login_required
@@ -162,12 +173,15 @@ def ShowStudentTasks(student, subj, group):
 @login_required
 def ManageTasks():
 
+    # TODO Нужно нормально всё выводить тут
+
     user = db.session.query(Staff).filter(Staff.userId == current_user.id).first()
     subject = Subject.query.filter(Subject.staffId == user.id).first()
 
-    labs = Labwork.query.filter(Labwork.subject == subject.name)
-    tests = Test.query.filter(Test.subject == subject.name)
-
+    labs = Labwork.query.filter(Labwork.subject == subject.name).join(LabworkDeadline).all()
+    print(labs)
+    tests = Test.query.with_entities(Test.id, Test.name, TestDeadline.edgroup, TestDeadline.deadline).filter(Test.subject == subject.name).join(TestDeadline, and_(Test.id == TestDeadline.id, Test.subject == TestDeadline.subject)).all()
+    print(tests)
     return render_template('/staff/manage_tasks.html', labs=labs, tests=tests, subject=subject)
 
 @app.route('/edit_lab/<subject>/<id>')
@@ -259,7 +273,8 @@ def DeleteTest(subject, id):
 def student_profile():
     user = User.query.filter_by(login=current_user.login).first()
     student = Student.query.filter(Student.userId == user.id).first()
-    return render_template('student/student_profile.html', title="Профиль", group=student.edgroup, student=student, user=user, id=student.id, name=student.name)
+    faculty = Faculty.query.join(Edgroup).filter(Edgroup.id == student.edgroup).first()
+    return render_template('student/student_profile.html', title="Профиль", group=student.edgroup, student=student, user=user, id=student.id, name=student.name, faculty=faculty.name)
 
 @app.route('/student_tasks')
 @login_required
@@ -268,21 +283,17 @@ def student_tasks():
     student = Student.query.filter(Student.userId == user.id).first()
 
     #? Запрос, возвращающий информацию о лабораторных, идущих у данного студента
-
-    studentLabworks = db.session.query(LabworkDeadline).filter(LabworkDeadline.edgroup == student.edgroup).subquery('studentLabworks')
-    labworkInfo = db.session.query(studentLabworks, Labwork.id.label('labworkNum'), Labwork.name.label('labworkName')).join(Labwork).filter(Labwork.id == studentLabworks.c.id, Labwork.subject == studentLabworks.c.subject).subquery('labworkInfo')
-    #? Запрос, возвращающий имена преподавателей предметов, идущих у данного студента
-    labworks = db.session.query(labworkInfo, Staff.name.label('instructor')).join(Subject, labworkInfo.c.subject == Subject.name).join(Staff, Subject.staffId == Staff.id).all()
-    #?
-    #? Запрос, возвращающий информацию о контрольных, идущих у данного студента
-    studentTests = db.session.query(TestDeadline).filter(TestDeadline.edgroup == student.edgroup).subquery('studentTests')
-    testInfo = db.session.query(studentTests, Test.id.label('testNum'), Test.name.label('testName')).join(Test).filter(Test.id == studentTests.c.id, Test.subject == studentTests.c.subject).subquery('testInfo')
-    tests = db.session.query(testInfo, Staff.name.label('instructor')).join(Subject, testInfo.c.subject == Subject.name).join(Staff, Subject.staffId == Staff.id).all()
-    #?
+    subq = LabworkPass.query.filter(LabworkPass.studentid == student.id).subquery()
+    subq2 = LabworkDeadline.query.with_entities(LabworkDeadline.id, LabworkDeadline.subject, subq.c.mark, LabworkDeadline.deadline).outerjoin(subq, and_(subq.c.id == LabworkDeadline.id, subq.c.subject == LabworkDeadline.subject)).filter(LabworkDeadline.edgroup == student.edgroup).subquery()
+    labworks = Labwork.query.with_entities(Labwork.id, Labwork.subject, Labwork.name.label('labName'), subq2.c.mark, subq2.c.deadline, Staff.name.label('instructor')).join(subq2, and_(subq2.c.id == Labwork.id, subq2.c.subject == Labwork.subject)).outerjoin(Subject, Labwork.subject == Subject.name).outerjoin(Staff, Subject.staffId == Staff.id).all()
     
-    #? Объединение запросов
-    #tasks = db.session.query(labworks, tests).join(tests, literal(True)).all()
+    #? Запрос, возвращающий всю информацию о контрольных, идущих у данного студента
+    subq = TestPass.query.filter(TestPass.studentid == student.id).subquery()
+    subq2 = TestDeadline.query.with_entities(TestDeadline.id, TestDeadline.subject, subq.c.mark, TestDeadline.deadline).outerjoin(subq, and_(subq.c.id == TestDeadline.id, subq.c.subject == TestDeadline.subject)).filter(TestDeadline.edgroup == student.edgroup).subquery()
+    tests = Test.query.with_entities(Test.id, Test.subject, Test.name.label('testName'), subq2.c.mark, subq2.c.deadline, Staff.name.label('instructor')).join(subq2, and_(subq2.c.id == Test.id, subq2.c.subject == Test.subject)).outerjoin(Subject, Test.subject == Subject.name).outerjoin(Staff, Subject.staffId == Staff.id).all()
     #?
+
+    print(tests)
 
     return render_template('student/student_tasks.html', title="Задания", labworks=labworks, tests=tests)
 
@@ -291,7 +302,7 @@ def student_tasks():
 def ShowInstructorProfile(instructor):
 
     staffInfo = Staff.query.filter(Staff.name == instructor).first()
-    user = User.query.filter(Staff.userId == User.id).first()
+    user = User.query.filter(User.id == staffInfo.userId).first()
     subject = Subject.query.filter(Subject.staffId == staffInfo.id).first()
         
     return render_template('student/instructor_profile.html', title="Преподаватель", staffInfo=staffInfo, user=user, subject=subject)

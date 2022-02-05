@@ -1,31 +1,53 @@
 {% extends 'bases/staffBase.html' %}
 
 {% block content %}
-
-<table> 
-  {% for l in labs %}
-  <tr>
-    <td>{{l.id}}</td>
-    <td>{{l.name}}</td>
-    <td><a href="{{ url_for('EditLab', id=l.id, subject=subject) }}">Изменить</a></td>
-    <td><a href="{{ url_for('DeleteLab', id=l.id, subject=subject) }}">Удалить</a></td>
-  </tr>
-  {% endfor %}
-  <tr>
-    <td><a href="{{ url_for('AddLab', subject=subject) }}">Добавить</a></td>
-  </tr>
-  {% for t in tests %}
-  <tr>
-    <td>{{t.id}}</td>
-    <td>{{t.name}}</td>
-    <td><a href="{{ url_for('EditTest', id=t.id, subject=subject) }}">Изменить</a></td>
-    <td><a href="{{ url_for('DeleteTest', id=t.id, subject=subject) }}">Удалить</a></td>
-  </tr>
-  {% endfor %}
-  <tr>
-    <td><a href="{{ url_for('AddTest', subject=subject) }}">Добавить</a></td>
-  </tr>
-</table>
-
-
+<div>
+  <table border="1" style="border-width: 1px;">
+      <col>
+      <colgroup span="6"></colgroup>
+      <tr>
+          <th colspan="6" scope="colgroup">Лабораторные работы</td>
+      </tr>
+      <th>№ задания</th>
+      <th>Название работы</th>
+      <th>Группа</th>
+      <th>Срок сдачи</th>
+      <th colspan="2">Управление</th>
+      {% for lab in labs %}
+      <tr>
+          <td>{{lab.id}}</td>
+          <td>{{lab.name}}</td>
+          <td>{{lab.edgroup}}</td>
+          <td>{{lab.deadline}}</td>
+          <td><a href="{{ url_for('EditLab', id=lab.id, subject=subject) }}">Изменить</a></td>
+          <td><a href="{{ url_for('DeleteLab', id=lab.id, subject=subject) }}">Удалить</a></td>
+      </tr>
+      {% endfor %}    
+      <tr>
+        <td colspan="6" style="text-align:center;"><a href="{{ url_for('AddLab', subject=subject) }}">Добавить</a></td>
+      </tr>
+      <col>
+      <tr>
+          <th colspan="6" scope="colgroup">Контрольные работы</th>
+      </tr>
+      <th>№ задания</th>
+      <th>Название работы</th>
+      <th>Группа</th>
+      <th>Срок проведения</th>
+      <th colspan="2">Управление</th>
+      {% for test in tests %}
+      <tr>
+        <td>{{test.id}}</td>
+        <td>{{test.name}}</td>
+        <td>{{test.edgroup}}</td>
+        <td>{{test.deadline}}</td>
+        <td><a href="{{ url_for('EditTest', id=test.id, subject=subject) }}">Изменить</a></td>
+        <td><a href="{{ url_for('DeleteTest', id=test.id, subject=subject) }}">Удалить</a></td>
+      </tr>
+        {% endfor %}
+      <tr>
+        <td colspan="6" style="text-align:center;"><a href="{{ url_for('AddTest', subject=subject) }}">Добавить</a></td>
+      </tr>  
+  </table>
+</div>
 {% endblock %}

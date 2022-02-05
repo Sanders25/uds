@@ -23,6 +23,10 @@ class RegisterForm(FlaskForm):
 class GroupSearchForm(FlaskForm):
     group = SelectField('group', choices=[])
 
+class RoleSelectForm(FlaskForm):
+    role = SelectField('role', choices=[])
+    submit = SubmitField('Применить')
+
 class EditTaskForm(FlaskForm):
     taskId = StringField('Номер задания', validators=[DataRequired()])
     taskName = StringField('Название', validators=[DataRequired()])

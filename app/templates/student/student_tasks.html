@@ -4,37 +4,61 @@
 
 <h1>Задания</h1>
 <table border="1">
-    <caption>Лабораторные работы</caption>
+    <col>
+    <colgroup span="6"></colgroup>
+    <tr>
+        <th colspan="6" scope="colgroup">Лабораторные работы</td>
+    </tr>
     <th>№ задания</th>
     <th>Дисциплина</th>
     <th>Название работы</th>
     <th>Срок сдачи</th>
+    <th>Оценка</th>
     <th>Преподаватель</th>
     {% for lab in labworks %}
     <tr>
-        <td>{{lab.labworkNum}}</td>
+        <td>{{lab.id}}</td>
         <td>{{lab.subject}}</td>
-        <td>{{lab.labworkName}}</td>
+        <td>{{lab.labName}}</td>
         <td>{{lab.deadline}}</td>
+        {% if lab.mark != None %}
+        <td>{{lab.mark}}</td>
+        {% else %}
+        <td>Нет</td>
+        {% endif %}
+        {% if lab.instructor != None %}
         <td><a href="{{url_for('ShowInstructorProfile', instructor=lab.instructor)}}">{{lab.instructor}}</a></td>
+        {% else %}
+        <td></td>
+        {% endif %}
     </tr>
     {% endfor %}    
-</table>
-<hr>
-<table border="1">
-    <caption>Контрольные работы</caption>
+    <col>
+    <tr>
+        <th colspan="6" scope="colgroup">Контрольные работы</th>
+    </tr>
     <th>№ задания</th>
     <th>Дисциплина</th>
     <th>Название работы</th>
     <th>Срок проведения</th>
+    <th>Оценка</th>
     <th>Преподаватель</th>
     {% for test in tests %}
     <tr>
-        <td>{{test.testNum}}</td>
+        <td>{{test.id}}</td>
         <td>{{test.subject}}</td>
         <td>{{test.testName}}</td>
         <td>{{test.deadline}}</td>
+        {% if test.mark != None %}
+        <td>{{test.mark}}</td>
+        {% else %}
+        <td>Нет</td>
+        {% endif %}
+        {% if test.instructor != None %}
         <td><a href="{{url_for('ShowInstructorProfile', instructor=test.instructor)}}">{{test.instructor}}</a></td>
+        {% else %}
+        <td></td>
+        {% endif %}
     </tr>
     {% endfor %}    
 </table>

@@ -2,14 +2,13 @@
 
 {% block content %}
 
-<body>
     <div class="container">
         <div class="student-profile">
             <div class="user__header">
                 <div class="user__avatar"><img src="{{user.avatar(64) }}"></div>
                     <h2 class="user__name">{{name}}</h2>
             </div>
-            <p class="user__info">Институт:<span>Вычислительных систем и сетей</span></p>
+            <p class="user__info">Институт:<span>{{faculty}}</span></p>
             <p class="user__info">Группа:<span>{{group}}</span></p>
             <p class="user__info">Уровень подготовки:<span>Бакалавр</span></p>
             <p class="user__info">Номер студенческого билета:<span>{{id}}</span></p>

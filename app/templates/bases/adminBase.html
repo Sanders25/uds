@@ -1,15 +1,23 @@
 <html>
     <head>
-       
-        <title>Администратор</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        {% if title %}
+            <title>{{ title }}</title>
+        {%endif %}
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.min.css') }}">
     </head>
 
     <body class="background">
         <div style=background-color:white>
         </div> 
         <div class="foreground">
+            {% block content %}
+            {% endblock %}
         </div>
-
+        <div style=background-color:white>
+            <a href="{{url_for('admin_accounts')}}">Учётные записи</a>
+            <a href="{{url_for('admin_groups')}}">Группы</a>
+            <a href="{{url_for('admin_subjects')}}">Дисциплины</a>
+            <a href="{{url_for('logout')}}">Выход</a>
+        </div> 
     </body>
 </html>

@@ -12,12 +12,11 @@
             <a href="{{ url_for('logout') }}">Выход</a>
             {% endif %}
         </div> 
-        <div class="foreground">
+        <div class="centered-window">
             {% block content %}
             {% endblock %}
         </div>
 
-        <hr>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <ul>

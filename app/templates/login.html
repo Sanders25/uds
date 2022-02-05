@@ -4,7 +4,7 @@
     <h1>Вход</h1>
     <form action="" method="post"  novalidate>
         {{ form.hidden_tag() }}
-        <p>
+        <p class="mainText">
             {{ form.login.label }}<br>
             {{ form.login(size=32) }}<br>
             {% for error in form.login.errors %}
@@ -18,8 +18,7 @@
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
         </p>
-        <p>{{ form.remember_me() }} {{ form.remember_me.label }}</p>
-        <p>{{ form.submit() }}</p>
+        <p><button style="font-family: Blogger Sans; font-size: 14pt;" type="submit">Войти</button></p>
         <p><a href="{{ url_for('register') }}">Зарегистрироваться</a></p>
     </form>
  {% endblock %}

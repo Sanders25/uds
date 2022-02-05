@@ -2,4 +2,25 @@
 
 {% block content %}
 
+<table border="1">
+    <th>№</th>
+    <th>Логин</th>
+    <th>Роль</th>
+    <th colspan="2">Управление</th>
+    {% for user in users %}
+    <tr>
+        <td>{{user.id}}</td>
+        <td>{{user.login}}</td>
+        <td>{{user.role}}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<hr>
+<b>Выводить только:</b>
+<form method="POST">
+    {{form.role}}
+    {{form.submit() }}
+</form>
+
 {%endblock %}

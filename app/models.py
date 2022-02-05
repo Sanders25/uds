@@ -1,4 +1,5 @@
 from calendar import c
+from email.policy import default
 from app import db, adminManager
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -147,7 +148,7 @@ class TestPass(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     studentid = db.Column(db.Integer, db.ForeignKey('student.id'), primary_key=True)
     subject = db.Column(db.String(50), primary_key=True)
-    mark = db.Column(db.Integer, nullable=True)
+    mark = db.Column(db.Integer, nullable=True, default='')
 
     students = db.relationship('Student')
     subjects = db.relationship('Test')
