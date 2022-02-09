@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mocap</title>
+  <link rel="stylesheet" href="css/style.min.css" />
+</head>
+
+<body>
+  <div class="bg bg-st">
+    <div class="container">
+      <nav class="nemu">
+        <ul class="menu__list">
+          <li class="menu__item">
+            <a class="menu__icon" href="index.html">
+              <i class="fas fa-user-tie"></i>
+              <span class="tooltip">Профиль</span>
+            </a>
+          </li>
+          <li class="menu__item">
+            <a class="menu__icon" href="prepod-tasks.html">
+              <i class="fas fa-spinner"></i>
+              <span class="tooltip">Учебный процесс</span>
+            </a>
+          </li>
+          <li class="menu__item menu__item--active">
+            <a class="menu__icon " href="student-tasks.html">
+              <i class="fas fa-tasks "></i>
+              <span class="tooltip">Задания</span>
+            </a>
+          </li>
+          <li class="menu__item">
+            <a class="menu__icon" href="login.html">
+              <i class="fas fa-sign-out-alt"></i>
+              <span class="tooltip">Выход</span>
+            </a>
+          </li>
+
+
+
+
+
+
+
+        </ul>
+      </nav>
+
+
+      <!-- <div class="filters">
+      <div class="filter__item">
+        <p class="filter__name">Дисциплина</p>
+        <select class="filter__select" name="" id="">
+          <option value="">Дисциплина-1</option>
+          <option value="">Дисциплина-2</option>
+          <option value="">Дисциплина-3</option>
+          <option value="">Дисциплина-4</option>
+        </select>
+      </div>
+      <div class="filter__item">
+        <p class="filter__name">Статус</p>
+        <select class="filter__select" name="" id="">
+          <option value="">Статус-1</option>
+          <option value="">Статус-2</option>
+        </select>
+      </div>
+      <div class="filter__item">
+        <p class="filter__name">Тип работы</p>
+        <select class="filter__select" name="" id="">
+          <option value="">Тип работы-1</option>
+          <option value="">Тип работы-2</option>
+        </select>
+      </div>
+    </div>
+    <div class="dropdown">
+              <button class="dropdown-btn"> месяц</button>
+              <ul class="dropdown__list">
+                <li class="dropdown__item" data-value="something">Январь</li>
+                <li class="dropdown__item" data-value="something">Февраль</li>
+                <li class="dropdown__item" data-value="something">Март</li>
+                <li class="dropdown__item" data-value="something">Апрель</li>
+              </ul>
+              <input type="text" name="select-category" value="" class="dropdown__input-hidden">
+             </div> -->
+
+      <section class="tasks">
+
+        <div class="tasks__inner">
+          <div class="task__item ">
+            <div class="task__item__module task__main">
+              <h2 class="task__name">
+                Изучение методов и подходов к аппаратно-программной защите
+                информации
+              </h2>
+              <ul class="task__label-list">
+                <li class="task__label">Базы данных</li>
+                <li class="task__label">Коломойцев В.С.</li>
+                <li class="task__label">Курсовой проект</li>
+              </ul>
+            </div>
+            <div class="task__bottom">
+              <div class="task__item__module task__info">
+                <ul class="task__info-list">
+                  <li class="task__info-item deadline">
+                    Deadline<span>15.02.22</span>
+                  </li>
+                  <li class="task__info-item">
+                    Загружен<span>26.01.22</span>
+                  </li>
+                  <li class="task__info-item">Оценка<span>3/5</span></li>
+                </ul>
+                <div class="task__progress"><span>70%</span></div>
+              </div>
+              <div class="task__item__module task__status">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="task__item not-done">
+            <div class="task__item__module task__main">
+              <h2 class="task__name">
+                Изучение методов и подходов к аппаратно-программной защите
+                информации
+              </h2>
+              <ul class="task__label-list">
+                <li class="task__label">Базы данных</li>
+                <li class="task__label">Коломойцев В.С.</li>
+                <li class="task__label">Курсовой проект</li>
+              </ul>
+            </div>
+            <div class="task__bottom not-done">
+              <div class="task__item__module task__info ">
+                <ul class="task__info-list">
+                  <li class="task__info-item deadline-not">
+                    Deadline<span>15.02.22</span>
+                  </li>
+                  <li class="task__info-item">
+                    Загружен<span>--.--.--</span>
+                  </li>
+                  <li class="task__info-item">Оценка<span>0/5</span></li>
+                </ul>
+                <div class="task__progress"><span>0%</span></div>
+              </div>
+              <div class="task__item__module task__status">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+          </div>
+          <div class="task__item not-done">
+            <div class="task__item__module task__main">
+              <h2 class="task__name">
+                Изучение методов и подходов к аппаратно-программной защите
+                информации
+              </h2>
+              <ul class="task__label-list">
+                <li class="task__label">Базы данных</li>
+                <li class="task__label">Коломойцев В.С.</li>
+                <li class="task__label">Курсовой проект</li>
+              </ul>
+            </div>
+            <div class="task__bottom not-done">
+              <div class="task__item__module task__info ">
+                <ul class="task__info-list">
+                  <li class="task__info-item deadline-not">
+                    Deadline<span>15.02.22</span>
+                  </li>
+                  <li class="task__info-item">
+                    Загружен<span>--.--.--</span>
+                  </li>
+                  <li class="task__info-item">Оценка<span>0/5</span></li>
+                </ul>
+                <div class="task__progress"><span>0%</span></div>
+              </div>
+              <div class="task__item__module task__status">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+          </div>
+          <div class="task__item">
+            <div class="task__item__module task__main">
+              <h2 class="task__name">
+                Изучение методов и подходов к аппаратно-программной защите
+                информации
+              </h2>
+              <ul class="task__label-list">
+                <li class="task__label">Базы данных</li>
+                <li class="task__label">Коломойцев В.С.</li>
+                <li class="task__label">Курсовой проект</li>
+              </ul>
+            </div>
+            <div class="task__bottom">
+              <div class="task__item__module task__info">
+                <ul class="task__info-list">
+                  <li class="task__info-item deadline">
+                    Deadline<span>15.02.22</span>
+                  </li>
+                  <li class="task__info-item">
+                    Загружен<span>26.01.22</span>
+                  </li>
+                  <li class="task__info-item">Оценка<span>3/5</span></li>
+                </ul>
+                <div class="task__progress"><span>70%</span></div>
+              </div>
+              <div class="task__item__module task__status">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="task__item not-done">
+            <div class="task__item__module task__main">
+              <h2 class="task__name">
+                Изучение методов и подходов к аппаратно-программной защите
+                информации
+              </h2>
+              <ul class="task__label-list">
+                <li class="task__label">Базы данных</li>
+                <li class="task__label">Коломойцев В.С.</li>
+                <li class="task__label">Курсовой проект</li>
+              </ul>
+            </div>
+            <div class="task__bottom not-done">
+              <div class="task__item__module task__info ">
+                <ul class="task__info-list">
+                  <li class="task__info-item deadline-not">
+                    Deadline<span>15.02.22</span>
+                  </li>
+                  <li class="task__info-item">
+                    Загружен<span>--.--.--</span>
+                  </li>
+                  <li class="task__info-item">Оценка<span>0/5</span></li>
+                </ul>
+                <div class="task__progress"><span>0%</span></div>
+              </div>
+              <div class="task__item__module task__status">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+          </div>
+          <div class="task__item not-done">
+            <div class="task__item__module task__main">
+              <h2 class="task__name">
+                Изучение методов и подходов к аппаратно-программной защите
+                информации
+              </h2>
+              <ul class="task__label-list">
+                <li class="task__label">Базы данных</li>
+                <li class="task__label">Коломойцев В.С.</li>
+                <li class="task__label">Курсовой проект</li>
+              </ul>
+            </div>
+            <div class="task__bottom not-done">
+              <div class="task__item__module task__info ">
+                <ul class="task__info-list">
+                  <li class="task__info-item deadline-not">
+                    Deadline<span>15.02.22</span>
+                  </li>
+                  <li class="task__info-item">
+                    Загружен<span>--.--.--</span>
+                  </li>
+                  <li class="task__info-item">Оценка<span>0/5</span></li>
+                </ul>
+                <div class="task__progress"><span>0%</span></div>
+              </div>
+              <div class="task__item__module task__status">
+                <i class="fas fa-check"></i>
+              </div>
+            </div>
+          </div>
+
+
+
+
+        </div>
+    </div>
+  </div>
+
+
+  </div>
+  </section>
+  </div>
+
+  <script src="js/main.min.js"></script>
+</body>
+
+</html>
