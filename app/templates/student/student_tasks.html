@@ -15,6 +15,7 @@
     <th>Срок сдачи</th>
     <th>Оценка</th>
     <th>Преподаватель</th>
+    <th>Percentage</th>
     {% for lab in labworks %}
     <tr>
         <td>{{lab.id}}</td>
@@ -31,6 +32,11 @@
         {% else %}
         <td></td>
         {% endif %}
+        {% if lab.percent != None %}
+        <td>{{lab.percent}}</td>
+        {% else %}
+        <td>Нет</td>
+        {% endif %}
     </tr>
     {% endfor %}    
     <col>
@@ -43,6 +49,7 @@
     <th>Срок проведения</th>
     <th>Оценка</th>
     <th>Преподаватель</th>
+    <th>Percentage</th>
     {% for test in tests %}
     <tr>
         <td>{{test.id}}</td>
@@ -58,6 +65,11 @@
         <td><a href="{{url_for('ShowInstructorProfile', instructor=test.instructor)}}">{{test.instructor}}</a></td>
         {% else %}
         <td></td>
+        {% endif %}
+        {% if test.percent != None %}
+        <td>{{test.percent}}</td>
+        {% else %}
+        <td>Нет</td>
         {% endif %}
     </tr>
     {% endfor %}    

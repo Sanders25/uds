@@ -93,6 +93,7 @@ class Test(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True) 
     name = db.Column(db.String(100))
+    commentary = db.Column(db.String(200))
 
     subjects = db.relationship('Subject')
 
@@ -109,7 +110,9 @@ class Labwork(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     subject = db.Column(db.String(100), db.ForeignKey('subject.name'), primary_key=True)
     name = db.Column(db.String(100))
+    commentary = db.Column(db.String(200))
 
+    dl = db.relationship('LabworkDeadline', cascade='all, delete-orphan')
     subjects = db.relationship('Subject')
 
     def __repr__(self):

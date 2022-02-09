@@ -14,14 +14,16 @@
     </form>
 
     <h2>{{ selectedGroup }}</h2>
-    <table>
-        <th>Студент</th>
-        {% for s in students %}
-        <tr>
-            <td><a href="{{ url_for('ShowStudentTasks', student=s.id, subj=subj, group=selectedGroup) }}">{{ s.name }}</a></td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div align="center">
+        <table>
+            <th>Студент</th>
+            {% for s in students %}
+            <tr>
+                <td><a href="{{ url_for('ShowStudentTasks', student=s.id, subj=subj, group=selectedGroup) }}">{{ s.name }}</a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
 </div>
 <script>
         /*

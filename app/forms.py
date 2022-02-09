@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
+from wtforms.fields.html5 import DateTimeLocalField
 from wtforms.validators import DataRequired, EqualTo, ValidationError
 from app.models import User
 
@@ -30,6 +31,9 @@ class RoleSelectForm(FlaskForm):
 class EditTaskForm(FlaskForm):
     taskId = StringField('Номер задания', validators=[DataRequired()])
     taskName = StringField('Название', validators=[DataRequired()])
+    taskGroup = SelectField('Группа', validators=[DataRequired()], choices=[])
+    taskDeadline = DateTimeLocalField('Срок до', format='%Y-%m-%dT%H:%M:%S', validators=[DataRequired()])
+    taskCommentary = StringField('Комментарий')
     submit = SubmitField('Сохранить')
 
 

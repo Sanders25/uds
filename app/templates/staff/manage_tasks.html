@@ -19,8 +19,8 @@
           <td>{{lab.name}}</td>
           <td>{{lab.edgroup}}</td>
           <td>{{lab.deadline}}</td>
-          <td><a href="{{ url_for('EditLab', id=lab.id, subject=subject) }}">Изменить</a></td>
-          <td><a href="{{ url_for('DeleteLab', id=lab.id, subject=subject) }}">Удалить</a></td>
+          <td><a href="{{ url_for('EditLab', id=lab.id, subject=subject, group=lab.edgroup) }}">Изменить</a></td>
+          <td><a href="{{ url_for('DeleteLab', id=lab.id, subject=subject, group=lab.edgroup) }}">Удалить</a></td>
       </tr>
       {% endfor %}    
       <tr>
@@ -41,8 +41,8 @@
         <td>{{test.name}}</td>
         <td>{{test.edgroup}}</td>
         <td>{{test.deadline}}</td>
-        <td><a href="{{ url_for('EditTest', id=test.id, subject=subject) }}">Изменить</a></td>
-        <td><a href="{{ url_for('DeleteTest', id=test.id, subject=subject) }}">Удалить</a></td>
+        <td><a href="{{ url_for('EditTest', id=test.id, subject=subject, group=test.edgroup) }}">Изменить</a></td>
+        <td><a href="{{ url_for('DeleteTest', id=test.id, subject=subject, group=test.edgroup) }}">Удалить</a></td>
       </tr>
         {% endfor %}
       <tr>

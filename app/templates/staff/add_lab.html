@@ -3,11 +3,23 @@
 {% block content %}
 
 <form action="" method="POST" novalidate>
+  <u>Внимание, нумерация заданий для каждой группы отдельна.</u>
   <p>
-    {{ form.taskId.label }}<br>
+    {{ form.taskId.label }}
     {{ form.taskId}}<br>
-    {{ form.taskName.label }}<br>
+
+    {{ form.taskName.label }}
     {{ form.taskName}}<br>
+
+    {{ form.taskGroup.label }}
+    {{ form.taskGroup }}<br>
+
+    {{ form.taskDeadline.label }}
+    {{ form.taskDeadline }}<br>
+
+    {{ form.taskCommentary.label }}
+    {{ form.taskCommentary }}<br>
+
     {{ form.submit() }}
   </p>
 
