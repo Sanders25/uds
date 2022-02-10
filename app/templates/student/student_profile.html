@@ -1,27 +1,27 @@
 {% extends 'bases/studentBase.html' %}
 
 {% block content %}
-
-    <div class="container">
-        <div class="student-profile">
+    <div class="profile-item">
+        <div class="profile profile-student">
             <div class="user__header">
-                <div class="user__avatar"><img src="{{user.avatar(64) }}"></div>
-                    <h2 class="user__name">{{name}}</h2>
+                <div class="user__avatar"><img src="{{ user.avatar(64) }}"></div>
+                <h2 class="user__name">{{name}}</h2>
             </div>
             <p class="user__info">Институт:<span>{{faculty}}</span></p>
             <p class="user__info">Группа:<span>{{group}}</span></p>
             <p class="user__info">Уровень подготовки:<span>Бакалавр</span></p>
             <p class="user__info">Номер студенческого билета:<span>{{id}}</span></p>
-            <div class="user__contact">
-                <h3 class="user__contact__title">Контакты</h3>
-                <a  class="user__contact__email" href="mailto:User007@gmail.com">User007@gmail.com</a>
-                <a  class="user__contact__phone" href="tel:88005553535">8 800 555 35 35</a>
-            </div>
+            <h3 class="user__contact__title">Контакты</h3>
+            <ul class="contact__list">
+                <li class="contact__item">
+                    <i class="far fa-envelope"></i>
+                    <a class="user__email" href="mailto:User007@gmail.com">User007@gmail.com</a>
+                </li>
+                <li class="contact__item">
+                    <i class="fas fa-mobile"></i>
+                    <a class="user__phone" href="tel:88005553535">8 800 555 35 35</a>
+                </li>
+            </ul>
         </div>
     </div>
-
-
-
-    <script src="js/main.min.js"></script>
-
 {% endblock %}

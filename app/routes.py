@@ -115,8 +115,9 @@ def db_admin_main():
 def staff_profile():
     user = User.query.filter_by(login=current_user.login).first()
     staff = Staff.query.filter(Staff.userId == user.id).first()
+    subject = Subject.query.filter(Subject.staffId == staff.id).first()
     print(staff)
-    return render_template('staff/staff_profile.html', title='Профиль', faculty=staff.faculty, user=user, name=staff.name)
+    return render_template('staff/staff_profile.html', title='Профиль', faculty=staff.faculty, user=user, name=staff.name, subject=subject)
 
 @app.route('/staff_manage', methods=['GET', 'POST'])
 @login_required
@@ -306,7 +307,7 @@ def student_tasks():
     #? Запрос, возвращающий информацию о лабораторных, идущих у данного студента
     subq = LabworkPass.query.filter(LabworkPass.studentid == student.id).subquery()
     subq2 = LabworkDeadline.query.with_entities(LabworkDeadline.id, LabworkDeadline.subject, subq.c.mark, LabworkDeadline.deadline).outerjoin(subq, and_(subq.c.id == LabworkDeadline.id, subq.c.subject == LabworkDeadline.subject)).filter(LabworkDeadline.edgroup == student.edgroup).subquery()
-    labworks = Labwork.query.with_entities(Labwork.id, Labwork.subject, Labwork.name.label('labName'), subq2.c.mark, ((subq2.c.mark * 100) / 5).label('percent'), subq2.c.deadline, Staff.name.label('instructor')).join(subq2, and_(subq2.c.id == Labwork.id, subq2.c.subject == Labwork.subject)).outerjoin(Subject, Labwork.subject == Subject.name).outerjoin(Staff, Subject.staffId == Staff.id).all()
+    labworks = Labwork.query.with_entities(Labwork.id, Labwork.subject, Labwork.name.label('labName'), subq2.c.mark, ((subq2.c.mark * 100) / 5).label('percent'), func.to_char(subq2.c.deadline, 'DD.MM.YYYY').label('deadline'), Staff.name.label('instructor')).join(subq2, and_(subq2.c.id == Labwork.id, subq2.c.subject == Labwork.subject)).outerjoin(Subject, Labwork.subject == Subject.name).outerjoin(Staff, Subject.staffId == Staff.id).all()
     
     #? Запрос, возвращающий всю информацию о контрольных, идущих у данного студента
     subq = TestPass.query.filter(TestPass.studentid == student.id).subquery()

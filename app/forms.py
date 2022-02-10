@@ -5,15 +5,15 @@ from wtforms.validators import DataRequired, EqualTo, ValidationError
 from app.models import User
 
 class LoginForm(FlaskForm):
-    login = StringField('Логин', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
+    login = StringField('Логин', validators=[DataRequired()], render_kw={"placeholder": "Логин"})
+    password = PasswordField('Пароль', validators=[DataRequired()], render_kw={"placeholder": "Пароль"})
     remember_me = BooleanField('Remember Me')
     submit = SubmitField('Войти')
 
 class RegisterForm(FlaskForm):
-    login = StringField('Логин', validators=[DataRequired()])
-    password = PasswordField('Пароль', validators=[DataRequired()])
-    password2 = PasswordField('Повторите пароль', validators=[DataRequired(), EqualTo('password')])
+    login = StringField('Логин', validators=[DataRequired()], render_kw={"placeholder": "Логин"})
+    password = PasswordField('Пароль', validators=[DataRequired()], render_kw={"placeholder": "Пароль"})
+    password2 = PasswordField('Повторите пароль', validators=[DataRequired(), EqualTo('password')], render_kw={"placeholder": "Повторите пароль"})
     submit = SubmitField('Зарегистрироваться')
 
     def validate_login(self, login):

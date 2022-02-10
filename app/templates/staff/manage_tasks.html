@@ -50,4 +50,116 @@
       </tr>  
   </table>
 </div>
+
+<div class="container">
+  <h2 class="laba__title">Список заданий</h2>
+  <div class="tasks__inner">
+    {% for lab in labs %}
+    <div class="task__laba">
+        <div class="task__item">
+            <div class="task__top">
+                <h2 class="task__module task__title">
+                  № - {{lab.id}}:
+                  {{lab.name}}
+                </h2>
+                <div class="task__module task__labels">
+                    <p class=" task__label-prepod">{{ subject }}</p>
+                </div>
+                <div class="task__module task__module-btn">
+                    <a class="task-btn" href="{{ url_for('EditLab', id=lab.id, subject=subject, group=lab.edgroup) }}">
+                      <i class="fas fa-cog"></i>
+                    </a>
+                </div>
+            </div>
+            <div class="task__data">
+                <div class="task__module task__info-prepod">
+                    <div class="task__info-wrap">
+                        <p class="task__info-text">Срок сдачи <br><span class="deadline-span">{{lab.deadline}}</span></p>
+                        <p class="task__info-text task__info-text">Группа<span class="done-span">{{lab.edgroup}}</span></p>
+                    </div>
+                </div>
+                <div class="task__module student-list__box">
+                    <div class="dropdown"><p class="dropdown__name">Список студентов</p>
+                        <ul class="dropdown__list">
+                            <li class="dropdown__item">1</li>
+                            <li class="dropdown__item">2</li>
+                            <li class="dropdown__item">3</li>
+                            <li class="dropdown__item">5</li>
+                            <li class="dropdown__item">6</li>
+                            <li class="dropdown__item">7</li>
+                            <li class="dropdown__item">8</li>
+                        </ul>
+                    
+                    <button class="task-btn dropdown-btn">
+                        <i class="fas fa-list"></i>
+                    </button>
+                </div>
+                    
+                </div>
+                <div class="task__module task__module-btn">
+                      <a class="task-btn delete-btn" href="{{ url_for('DeleteLab', id=lab.id, subject=subject, group=lab.edgroup) }}">
+                        <i class="fas fa-trash-alt"></i>
+                      </a>                       
+                </div>
+            </div>
+        </div>
+      </div>
+      {% endfor %}  
+      <a href="{{ url_for('AddLab', subject=subject) }}">Добавить</a>
+      {% for test in tests %}
+      <div class="task__kr">
+        <div class="task__item">
+          <div class="task__top">
+              <h2 class="task__module task__title">
+                № - {{test.id}}:
+                {{test.name}}
+              </h2>
+              <div class="task__module task__labels">
+                  <p class=" task__label-prepod">{{ subject }}</p>
+              </div>
+              <div class="task__module task__module-btn">
+                  <a class="task-btn" href="{{ url_for('EditTest', id=test.id, subject=subject, group=test.edgroup) }}">
+                    <i class="fas fa-cog"></i>
+                  </a>
+              </div>
+          </div>
+          <div class="task__data">
+              <div class="task__module task__info-prepod">
+                  <div class="task__info-wrap">
+                      <p class="task__info-text">Срок сдачи <br><span class="deadline-span">{{test.deadline}}</span></p>
+                      <p class="task__info-text task__info-text">Группа<span class="done-span">{{test.edgroup}}</span></p>
+                  </div>
+              </div>
+              <div class="task__module student-list__box">
+                  <div class="dropdown"><p class="dropdown__name">Список студентов</p>
+                      <ul class="dropdown__list">
+                          <li class="dropdown__item">1</li>
+                          <li class="dropdown__item">2</li>
+                          <li class="dropdown__item">3</li>
+                          <li class="dropdown__item">5</li>
+                          <li class="dropdown__item">6</li>
+                          <li class="dropdown__item">7</li>
+                          <li class="dropdown__item">8</li>
+                      </ul>
+                  
+                  <button class="task-btn dropdown-btn">
+                      <i class="fas fa-list"></i>
+                  </button>
+              </div>
+                  
+              </div>
+              <div class="task__module task__module-btn">
+                    <a class="task-btn delete-btn" href="{{ url_for('DeleteTest', id=test.id, subject=subject, group=test.edgroup) }}">
+                      <i class="fas fa-trash-alt"></i>
+                    </a>                       
+              </div>
+          </div>
+      </div>
+    </div>
+    {% endfor %}  
+    <a href="{{ url_for('AddTest', subject=subject) }}">Добавить</a>
+    </div>
+  </div>
+</div>
+
 {% endblock %}

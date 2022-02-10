@@ -1,31 +1,36 @@
 {% extends "bases/base.html" %}
 
 {% block content %}
-    <h1>Регистрация</h1>
-    <form action="" method="post">
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.login.label }}<br>
-            {{ form.login(size=32) }}<br>
+
+<div class="login__box">
+    <div class="login-content">
+        <h1 class="regist__title">Регистрация</h1>
+        <form class="regist-form" method="post" action="" novalidate>
+            {{ form.hidden_tag() }}
+            <div class="login__row">
+                <i class="fas fa-sign-in-alt"></i>
+                {{ form.login(class='regist__input regist__input-left') }}
+            </div>
             {% for error in form.login.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.password.label }}<br>
-            {{ form.password(size=32) }}<br>
+            <div class="login__row">
+                <i class="fas fa-key"></i>
+                {{ form.password(class='regist__input regist__input-left') }}
+            </div>
             {% for error in form.password.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p>
-            {{ form.password2.label }}<br>
-            {{ form.password2(size=32) }}<br>
-            {% for error in form.password2.errors %}
+            <div class="login__row">
+                <i class="fas fa-sync-alt"></i>
+                {{ form.password2(class='regist__input regist__input-left') }}
+            </div>
+            {% for error in form.password.errors %}
             <span style="color: red;">[{{ error }}]</span>
             {% endfor %}
-        </p>
-        <p><button style="font-family: Blogger Sans; font-size: 14pt;">Зарегистрироваться</button></p>
-        <p><a href="{{ url_for('login') }}">Войти</a></p>
-    </form>
+            <button type="submit" id="goLeft" class="login-btn">Зарегистрироваться</button>
+            <p style="margin-top:30px"><a href="{{ url_for('login') }}">Войти</a></p>            
+        </form>
+    </div>
+</div>
  {% endblock %}

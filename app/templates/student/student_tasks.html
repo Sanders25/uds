@@ -16,29 +16,9 @@
     <th>Оценка</th>
     <th>Преподаватель</th>
     <th>Percentage</th>
-    {% for lab in labworks %}
-    <tr>
-        <td>{{lab.id}}</td>
-        <td>{{lab.subject}}</td>
-        <td>{{lab.labName}}</td>
-        <td>{{lab.deadline}}</td>
-        {% if lab.mark != None %}
-        <td>{{lab.mark}}</td>
-        {% else %}
-        <td>Нет</td>
-        {% endif %}
-        {% if lab.instructor != None %}
-        <td><a href="{{url_for('ShowInstructorProfile', instructor=lab.instructor)}}">{{lab.instructor}}</a></td>
-        {% else %}
-        <td></td>
-        {% endif %}
-        {% if lab.percent != None %}
-        <td>{{lab.percent}}</td>
-        {% else %}
-        <td>Нет</td>
-        {% endif %}
-    </tr>
-    {% endfor %}    
+
+
+    
     <col>
     <tr>
         <th colspan="6" scope="colgroup">Контрольные работы</th>
@@ -74,5 +54,229 @@
     </tr>
     {% endfor %}    
 </table>
+
+<section class="tasks">    
+    <div class="container">
+        <div class="tasks__inner">
+
+            {% for lab in labworks %}
+
+                <div class="task__item ">
+                    <div class="task__item__module task__main">
+                    <h2 class="task__name">
+                        {{lab.id}}<br>
+                        {{lab.labName}}
+                    </h2>
+                    <ul class="task__label-list">
+                        <li class="task__label">{{lab.subject}}</li>
+                        {% if lab.instructor != None %}
+                        <li class="task__label"><a href="{{url_for('ShowInstructorProfile', instructor=lab.instructor)}}">{{lab.instructor}}</a></li>
+                        {% else %}
+                        <li class="task__label">---</li>
+                        {% endif %}
+                        <li class="task__label">Лабораторная работа</li>
+                    </ul>
+                    </div>
+                    <div class="task__bottom">
+                    <div class="task__item__module task__info">
+                        <ul class="task__info-list">
+                        <li class="task__info-item deadline">
+                            Срок до<span>{{lab.deadline}}</span>
+                        </li>
+                        {% if lab.mark != None %}
+                        <li class="task__info-item">Оценка<span>{{lab.mark}}</span></li>
+                        {% else %}
+                        <li class="task__info-item">Оценка<span>0/5</span></li>
+                        {% endif %}
+                        </ul>                
+                        {% if lab.percent != None %}
+                        <div class="task__progress"><span>{{lab.percent}}%</span></div>
+                        {% else %}
+                        <div class="task__progress"><span>0%</span></div>
+                        {% endif %}
+                    </div>
+                    <div class="task__item__module task__status">
+                        <i class="fas fa-check"></i>
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+
+      <div class="task__item not-done">
+        <div class="task__item__module task__main">
+          <h2 class="task__name">
+            Изучение методов и подходов к аппаратно-программной защите
+            информации
+          </h2>
+          <ul class="task__label-list">
+            <li class="task__label">Базы данных</li>
+            <li class="task__label">Коломойцев В.С.</li>
+            <li class="task__label">Курсовой проект</li>
+          </ul>
+        </div>
+        <div class="task__bottom not-done">
+          <div class="task__item__module task__info ">
+            <ul class="task__info-list">
+              <li class="task__info-item deadline-not">
+                Deadline<span>15.02.22</span>
+              </li>
+              <li class="task__info-item">
+                Загружен<span>--.--.--</span>
+              </li>
+              <li class="task__info-item">Оценка<span>0/5</span></li>
+            </ul>
+            <div class="task__progress"><span>0%</span></div>
+          </div>
+          <div class="task__item__module task__status">
+            <i class="fas fa-check"></i>
+          </div>
+        </div>
+      </div>
+<!--
+      <div class="task__item not-done">
+        <div class="task__item__module task__main">
+          <h2 class="task__name">
+            Изучение методов и подходов к аппаратно-программной защите
+            информации
+          </h2>
+          <ul class="task__label-list">
+            <li class="task__label">Базы данных</li>
+            <li class="task__label">Коломойцев В.С.</li>
+            <li class="task__label">Курсовой проект</li>
+          </ul>
+        </div>
+        <div class="task__bottom not-done">
+          <div class="task__item__module task__info ">
+            <ul class="task__info-list">
+              <li class="task__info-item deadline-not">
+                Deadline<span>15.02.22</span>
+              </li>
+              <li class="task__info-item">
+                Загружен<span>--.--.--</span>
+              </li>
+              <li class="task__info-item">Оценка<span>0/5</span></li>
+            </ul>
+            <div class="task__progress"><span>0%</span></div>
+          </div>
+          <div class="task__item__module task__status">
+            <i class="fas fa-check"></i>
+          </div>
+        </div>
+      </div>
+      <div class="task__item">
+        <div class="task__item__module task__main">
+          <h2 class="task__name">
+            Изучение методов и подходов к аппаратно-программной защите
+            информации
+          </h2>
+          <ul class="task__label-list">
+            <li class="task__label">Базы данных</li>
+            <li class="task__label">Коломойцев В.С.</li>
+            <li class="task__label">Курсовой проект</li>
+          </ul>
+        </div>
+        <div class="task__bottom">
+          <div class="task__item__module task__info">
+            <ul class="task__info-list">
+              <li class="task__info-item deadline">
+                Deadline<span>15.02.22</span>
+              </li>
+              <li class="task__info-item">
+                Загружен<span>26.01.22</span>
+              </li>
+              <li class="task__info-item">Оценка<span>3/5</span></li>
+            </ul>
+            <div class="task__progress"><span>70%</span></div>
+          </div>
+          <div class="task__item__module task__status">
+            <i class="fas fa-check"></i>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="task__item not-done">
+        <div class="task__item__module task__main">
+          <h2 class="task__name">
+            Изучение методов и подходов к аппаратно-программной защите
+            информации
+          </h2>
+          <ul class="task__label-list">
+            <li class="task__label">Базы данных</li>
+            <li class="task__label">Коломойцев В.С.</li>
+            <li class="task__label">Курсовой проект</li>
+          </ul>
+        </div>
+        <div class="task__bottom not-done">
+          <div class="task__item__module task__info ">
+            <ul class="task__info-list">
+              <li class="task__info-item deadline-not">
+                Deadline<span>15.02.22</span>
+              </li>
+              <li class="task__info-item">
+                Загружен<span>--.--.--</span>
+              </li>
+              <li class="task__info-item">Оценка<span>0/5</span></li>
+            </ul>
+            <div class="task__progress"><span>0%</span></div>
+          </div>
+          <div class="task__item__module task__status">
+            <i class="fas fa-check"></i>
+          </div>
+        </div>
+      </div>
+      <div class="task__item not-done">
+        <div class="task__item__module task__main">
+          <h2 class="task__name">
+            Изучение методов и подходов к аппаратно-программной защите
+            информации
+          </h2>
+          <ul class="task__label-list">
+            <li class="task__label">Базы данных</li>
+            <li class="task__label">Коломойцев В.С.</li>
+            <li class="task__label">Курсовой проект</li>
+          </ul>
+        </div>
+        <div class="task__bottom not-done">
+          <div class="task__item__module task__info ">
+            <ul class="task__info-list">
+              <li class="task__info-item deadline-not">
+                Deadline<span>15.02.22</span>
+              </li>
+              <li class="task__info-item">
+                Загружен<span>--.--.--</span>
+              </li>
+              <li class="task__info-item">Оценка<span>0/5</span></li>
+            </ul>
+            <div class="task__progress"><span>0%</span></div>
+          </div>
+          <div class="task__item__module task__status">
+            <i class="fas fa-check"></i>
+          </div>
+        </div>
+      </div>
+
+
+
+
+    </div>
+</div>
+</div>
+
+-->
+        </div>
+    </div>
+</section>
+
+<script>
+    
+    $(function () {
+    $('.dropdown-btn').on('click', function(){
+    $('.dropdown__list').toggleClass('dropdown__list--active');
+    });
+
+
+});
+</script>
 
 {% endblock %}

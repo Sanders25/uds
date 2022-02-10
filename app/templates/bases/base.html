@@ -1,30 +1,21 @@
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.min.css') }}">
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     </head>
-    <body class="background">
-        <div style=background-color:white>
-            {% if current_user.is_anonymous %}
-
-            {% else %}
-            <a href="{{ url_for('user', login=current_user.login) }}">Profile</a>
-            <a href="{{ url_for('logout') }}">Выход</a>
-            {% endif %}
-        </div> 
-        <div class="centered-window">
+    <body class="background background-login">
+        <div>
             {% block content %}
             {% endblock %}
         </div>
-
+        <div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-        <ul>
             {% for message in messages %}
-            <li>{{ message }}</li>
+            {{ message }}
             {% endfor %}
-        </ul>
         {% endif %}
         {% endwith %}
+        </div>
     </body>
 </html>

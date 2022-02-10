@@ -7,16 +7,34 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.min.css') }}">
     </head>
 
-    <body class="background">
-        <div class="foreground">
+    <body>
+        <div>
            <!-- <h1> Пользователь <i><u>{{ current_user.login }}</u></i></h1>-->
             {% block content %}
             {% endblock %}
         </div>
-        <div class="menu" style=background-color:white>
-            <a href="{{url_for('student_profile')}}">Профиль</a>
-            <a href="{{url_for('student_tasks')}}">Задания</a>
-            <a href="{{url_for('logout')}}">Выход</a>
-        </div> 
+        
+        <nav class="nemu menu-studBase">
+            <ul class="menu__list">
+                <li class="menu__item menu__item--active">
+                    <a class="menu__icon" href="{{url_for('student_profile')}}">
+                        <i class="fas fa-user-tie"></i>
+                        <span class="tooltip">Профиль</span>
+                    </a>
+                </li>
+                <li class="menu__item">
+                    <a class="menu__icon" href="{{url_for('student_tasks')}}">
+                        <i class="fas fa-tasks"></i>
+                        <span class="tooltip">Задания</span>
+                    </a>
+                </li>
+                <li class="menu__item">
+                    <a class="menu__icon" href="{{url_for('logout')}}">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span class="tooltip">Выход</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
     </body>
 </html>
