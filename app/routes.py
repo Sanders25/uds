@@ -19,17 +19,16 @@ from datetime import datetime
 @login_required
 def index():
     if current_user.is_authenticated:
-        match current_user.role:
-            case "admin":
+        if current_user.role == "admin":
                 return redirect(url_for('admin_accounts'))
-            case "db_admin":
+        if current_user.role == "db_admin":
                 return redirect(url_for('db_admin_main'))
-            case "staff":
+        if current_user.role == "staff":
                 return redirect(url_for('staff_profile'))
-            case "student":
+        if  current_user.role == "student":
                 return redirect(url_for('student_profile'))
-    elif current_user.is_anonymous:
-        return redirect(url_for('login'))      
+        elif current_user.is_anonymous:
+            return redirect(url_for('login'))      
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
