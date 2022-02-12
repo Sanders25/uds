@@ -7,7 +7,7 @@
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.min.css') }}">
     </head>
 
-    <body>
+    <body class="background">
         <div>
            <!-- <h1> Пользователь <i><u>{{ current_user.login }}</u></i></h1>-->
             {% block content %}
@@ -16,7 +16,7 @@
         
         <nav class="nemu menu-studBase">
             <ul class="menu__list">
-                <li class="menu__item menu__item--active">
+                <li class="menu__item menu__item">
                     <a class="menu__icon" href="{{url_for('student_profile')}}">
                         <i class="fas fa-user-tie"></i>
                         <span class="tooltip">Профиль</span>

@@ -2,29 +2,30 @@
 
 {% block content %}
 
-<form action="" method="POST" novalidate>
-  <u>Внимание, нумерация заданий для каждой группы отдельна.</u>
-  <p>
-  <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
-    {{ form.taskId.label }}
-    {{ form.taskId}}
+<div class="outerContainer">
+  <form action="" method="POST" novalidate>
+    <h4 style="margin-bottom: 30px">Изменить лабораторную работу<br><u>Внимание, нумерация заданий для каждой группы отдельна.</u></h4>
+    <p>
+    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px">
+      {{ form.taskId.label }}
+      {{ form.taskId}}
 
-    {{ form.taskName.label }}
-    {{ form.taskName}}
+      {{ form.taskName.label }}
+      {{ form.taskName}}
 
-    {{ form.taskGroup.label }}
-    {{ form.taskGroup }}
+      {{ form.taskGroup.label }}
+      {{ form.taskGroup }}
 
-    {{ form.taskDeadline.label }}
-    {{ form.taskDeadline }}
+      {{ form.taskDeadline.label }}
+      {{ form.taskDeadline }}
 
-    {{ form.taskCommentary.label }}
-    {{ form.taskCommentary }}
+      {{ form.taskCommentary.label }}
+      {{ form.taskCommentary }}
 
-  </div>
+    </div>
 
-  <p style="margin-top: 30px;">{{ form.submit() }}</p>
-  </p>
-</form>
-
+    <p style="margin-top: 30px;">{{ form.submit() }}</p>
+    </p>
+  </form>
+</div>
 {% endblock %}

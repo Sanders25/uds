@@ -7,7 +7,7 @@ from flask_admin import BaseView, expose, AdminIndexView, Admin
 from app import loginManager
 from hashlib import md5
 from flask_admin.contrib.sqla import ModelView
-from sqlalchemy.orm import validates
+from sqlalchemy.orm import validates, backref
 
 #region Table Models
 class Faculty(db.Model):
@@ -112,7 +112,6 @@ class Labwork(db.Model):
     name = db.Column(db.String(100))
     commentary = db.Column(db.String(200))
 
-    dl = db.relationship('LabworkDeadline', cascade='all, delete-orphan')
     subjects = db.relationship('Subject')
 
     def __repr__(self):
@@ -131,11 +130,11 @@ class TestDeadline(db.Model):
     edgroup = db.Column(db.String(10), db.ForeignKey('edgroup.id'), primary_key=True)
     deadline = db.Column(db.DateTime)
 
-    subjects = db.relationship('Test')
+    subjects = db.relationship('Test', backref=backref("testsDl", cascade='all, delete-orphan', passive_deletes=True))
     groups = db.relationship('Edgroup')
 
     __table_args__ = (
-        db.ForeignKeyConstraint([id, subject], [Test.id, Test.subject]), {}
+        db.ForeignKeyConstraint([id, subject], [Test.id, Test.subject], onupdate="CASCADE", ondelete="CASCADE"), {}
     )
 
     def __repr__(self):
@@ -154,10 +153,10 @@ class TestPass(db.Model):
     mark = db.Column(db.Integer, nullable=True, default='')
 
     students = db.relationship('Student')
-    subjects = db.relationship('Test')
+    subjects = db.relationship('Test', backref=backref("testsPassed", cascade='all, delete-orphan', passive_deletes=True))
 
     __table_args__ = (
-        db.ForeignKeyConstraint([id, subject], [Test.id, Test.subject]), {}
+        db.ForeignKeyConstraint([id, subject], [Test.id, Test.subject], onupdate="CASCADE", ondelete="CASCADE"), {}
     )
 
     def __repr__(self):
@@ -177,10 +176,10 @@ class LabworkPass(db.Model):
     mark = db.Column(db.Integer, nullable=True)
 
     students = db.relationship('Student')
-    subjects = db.relationship('Labwork')
+    subjects = db.relationship('Labwork', backref=backref("LabworksDl", cascade='all, delete-orphan', passive_deletes=True))
 
     __table_args__ = (
-        db.ForeignKeyConstraint([id, subject], [Labwork.id, Labwork.subject]), {}
+        db.ForeignKeyConstraint([id, subject], [Labwork.id, Labwork.subject], onupdate="CASCADE", ondelete="CASCADE"), {}
     )
 
     def __repr__(self):
@@ -199,11 +198,11 @@ class LabworkDeadline(db.Model):
     edgroup = db.Column(db.String(10), db.ForeignKey('edgroup.id'), primary_key=True)
     deadline = db.Column(db.DateTime)
 
-    subjects = db.relationship('Labwork')
+    subjects = db.relationship('Labwork', backref=backref('LabworksPassed', cascade='all, delete-orphan', passive_deletes=True))
     groups = db.relationship('Edgroup')
 
     __table_args__ = (
-        db.ForeignKeyConstraint([id, subject], [Labwork.id, Labwork.subject]), {}
+        db.ForeignKeyConstraint([id, subject], [Labwork.id, Labwork.subject], onupdate="CASCADE", ondelete="CASCADE"), {}
     )
 
     def __repr__(self):

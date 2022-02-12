@@ -117,7 +117,7 @@ def staff_profile():
     staff = Staff.query.filter(Staff.userId == user.id).first()
     subject = Subject.query.filter(Subject.staffId == staff.id).first()
     print(staff)
-    return render_template('staff/staff_profile.html', title='Профиль', faculty=staff.faculty, user=user, name=staff.name, subject=subject)
+    return render_template('staff/staff_profile.html', title='Профиль', user=user, staff=staff, subject=subject)
 
 @app.route('/staff_manage', methods=['GET', 'POST'])
 @login_required
@@ -140,11 +140,6 @@ def staff_manage():
 
     if request.method == "POST":
         selectedGroup = request.form['groupSelect']
-        
-    # TODO: Здесь выводится список группы, где каждый студент кликабелен. Можно 
-    #* также подсчитывать количество сданных работ для каждого студента.
-    #* Нажимая на студента должны выводиться все работы для группы данного студента
-    # TODO
 
     students = db.session.query(Student).filter(Student.edgroup == selectedGroup).all()
     return render_template('staff/staff_manage.html', groups=groups, students=students, selectedGroup=selectedGroup, subj=subj.name)
@@ -156,7 +151,6 @@ def ShowStudentTasks(student, subj, group):
     studentName = Student.query.with_entities(Student.name).filter(Student.id == student).all()
     studentName = [n for n, in studentName]
 
-    #labworks = LabworkPass.query.join(Labwork).with_entities(Labwork.id.label('labNum'), Labwork.name.label('labName'), LabworkPass.mark).filter(LabworkPass.subject == subj, LabworkPass.studentid == student).all()
     marks = LabworkPass.query.join(Labwork).with_entities(Labwork.id.label('labNum'), Labwork.name.label('labName'), LabworkPass.mark).filter(LabworkPass.subject == subj, LabworkPass.studentid == student).subquery()
     deadlines = LabworkDeadline.query.join(Labwork).with_entities(Labwork.id, LabworkDeadline.deadline).filter(LabworkDeadline.subject == subj, LabworkDeadline.edgroup == group).subquery()
     labworks = db.session.query(deadlines, marks.c.labNum, marks.c.labName, marks.c.mark).join(marks, marks.c.labNum == deadlines.c.id).all()
@@ -173,18 +167,14 @@ def ShowStudentTasks(student, subj, group):
     for mark in tests:
         print(mark)
 
-    return render_template('/staff/staff_stud_tasks.html', labworks=labworks, tests=tests, subj=subj, studentName=studentName[0])
+    return render_template('/staff/staff_stud_tasks.html', labworks=labworks, tests=tests, subj=subj, studentName=studentName[0], group=group)
 
 @app.route('/manage_tasks/')
 @login_required
 def ManageTasks():
-
-    # TODO Нужно нормально всё выводить тут
-
     user = db.session.query(Staff).filter(Staff.userId == current_user.id).first()
     subject = Subject.query.filter(Subject.staffId == user.id).first()
 
-    #labs = Labwork.query.filter(Labwork.subject == subject.name).join(LabworkDeadline).all()
     labs = Labwork.query.with_entities(Labwork.id, Labwork.name, LabworkDeadline.edgroup, LabworkDeadline.deadline).filter(Labwork.subject == subject.name).join(LabworkDeadline, and_(Labwork.id == LabworkDeadline.id, Labwork.subject == LabworkDeadline.subject)).all()
     tests = Test.query.with_entities(Test.id, Test.name, TestDeadline.edgroup, TestDeadline.deadline).filter(Test.subject == subject.name).join(TestDeadline, and_(Test.id == TestDeadline.id, Test.subject == TestDeadline.subject)).all()
     return render_template('/staff/manage_tasks.html', labs=labs, tests=tests, subject=subject)
@@ -233,13 +223,22 @@ def EditTest(id, subject, group):
 @login_required
 def AddTest(subject):
     test = db.session.query(func.max(Test.id)).filter(Test.subject == subject).first()
-    form = EditTaskForm(taskId = test[0] + 1);
+    groups = AssignedClass.query.with_entities(AssignedClass.edgroup).filter(AssignedClass.subject == subject).all()
+
+    groups = [g for g, in groups]
+    #? Находит номер последней работы и выводит следующий за ним
+    form = EditTaskForm(taskId = test[0] + 1)
+    form.taskGroup.choices = [(group, group) for group in groups]
 
     if request.method == "POST":
         tId = request.form['taskId']
         tName = request.form['taskName']
-        t = Test(id=tId, name=tName, subject=subject)
-        db.session.add(t)
+        tGroup = request.form['taskGroup']
+        tDeadline = request.form['taskDeadline']
+        l = Test(id=tId, name=tName, subject=subject)
+        ld = TestDeadline(id=tId, subject=subject, edgroup=tGroup, deadline=tDeadline)
+        db.session.add(l)
+        db.session.add(ld)
         db.session.commit()
         return redirect(url_for('ManageTasks'))
 
@@ -277,6 +276,7 @@ def AddLab(subject):
 def DeleteLab(subject, group, id):
     l = Labwork.query.filter(Labwork.id == id, Labwork.subject == subject).first()
     db.session.delete(l)
+    db.session.commit()
     return redirect(url_for('ManageTasks'))
 
 @app.route('/delete_test/<subject>/<group>/<id>', methods=['GET', 'POST'])

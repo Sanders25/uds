@@ -1,17 +1,18 @@
 {% extends 'bases/staffBase.html' %}
 
 {% block content %}
-
-<div style="float: top;">
-    <h3>{{ subj }} - {{ studentName }}</h3>
-</div>
-<div>
-    <table border="1" style="margin-bottom: 15px; margin: 0 auto">
-        <caption>Лабораторные работы</caption>
+    
+<div class="outerContainer">
+    <h3 style="margin-bottom: 15px;">{{ subj }} - {{ studentName }}, гр. {{ group }}</h3>
+    <table class="studTasksTable">
+    <col>
+    <colgroup span="3"></colgroup>
+    <tr>
+        <th colspan="3" scope="colgroup">Лабораторные работы</td>
+    </tr>
         <th>№ работы</th>
         <th>Название</th>
         <th>Оценка</th>
-
         {% for l in labworks %}
         <tr>
             <td>{{l.labNum}}</td>
@@ -20,13 +21,13 @@
         </tr>
 
         {% endfor %}
-    </table>
-    <table border="1" style="margin-bottom: 15px; margin: 0 auto">
-        <caption>Контрольные работы</caption>
+        <col>
+        <tr>
+          <th colspan="3" scope="colgroup">Контрольные работы</th>
+        </tr>
         <th>№ работы</th>
         <th>Название</th>
         <th>Оценка</th>
-
         {% for t in tests %}
         <tr>
             <td>{{t.testNum}}</td>

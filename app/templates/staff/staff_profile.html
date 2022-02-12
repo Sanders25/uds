@@ -5,13 +5,12 @@
 <div class="profile-item">
     <div class="profile">
         <div class="user__header">
-            <div class="user__avatar"><img src="{{user.avatar(64) }}"></div>
-            <h2 class="user__name">{{name}}</h2>
+            <div class="user__avatar"><img src="{{user.avatar(64)}}"></div>
+            <h2 class="user__name">{{staff.name}}</h2>
         </div>
-        <p class="user__info">Институт:<span>{{faculty}}</span></p>
+        <p class="user__info">Институт:<span>{{staff.faculties}}</span></p>
         <p class="user__info">Дисциплины:<span>{{ subject }}</span></p>
-        <p class="user__info">Группы:<span>322</span><span>228</span><span>404</span></p>
-        <p class="user__info">Ученая степень :<span>Профессор</span></p>
+        <p class="user__info">Должность, уч. степень:<span>Доцент, кандидат техн. наук</span></p>
         <h3 class="user__contact__title">Контакты</h3>
         <ul class="contact__list">
             <li class="contact__item">
