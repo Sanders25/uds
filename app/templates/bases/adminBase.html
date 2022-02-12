@@ -4,6 +4,7 @@
             <title>{{ title }}</title>
         {%endif %}
         <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.min.css') }}">
+        {{ fontawesome_css() }}
     </head>
 
     <body class="background">
@@ -19,5 +20,6 @@
             <a href="{{url_for('admin_subjects')}}">Дисциплины</a>
             <a href="{{url_for('logout')}}">Выход</a>
         </div> 
+        {{ fontawesome_js() }}
     </body>
 </html>
