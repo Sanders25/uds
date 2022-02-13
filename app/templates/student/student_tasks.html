@@ -22,7 +22,7 @@
                           {% if lab.instructor != None %}
                           <li class="task__label"><a href="{{url_for('ShowInstructorProfile', instructor=lab.instructor)}}">{{lab.instructor}}</a></li>
                           {% else %}
-                          <li class="task__label">---</li>
+                          <li class="task__label"></li>
                           {% endif %}
                           <li class="task__label">Лабораторная работа</li>
                       </ul>
@@ -34,9 +34,9 @@
                               Срок до<span>{{lab.deadline}}</span>
                           </li>
                           {% if lab.mark != None and lab.mark > 2 %}
-                          <li class="task__info-item">Оценка<span>{{lab.mark}}</span></li>
+                          <li class="task__info-item">Оценка<span>{{lab.mark}}/5</span></li>
                           {% elif lab.mark != None and lab.mark <= 2 %}
-                          <li class="task__info-item"">Оценка<span style="background-color:#fe3e57">{{lab.mark}}</span></li>
+                          <li class="task__info-item"">Оценка<span style="background-color:#fe3e57">{{lab.mark}}/5</span></li>
                           {% else %}
                           <li class="task__info-item" >Оценка<span style="background-color:#bbb">0/5</span></li>
                           {% endif %}
@@ -96,9 +96,9 @@
                               Срок до<span>{{test.deadline}}</span>
                           </li>
                           {% if test.mark != None and test.mark > 2 %}
-                          <li class="task__info-item">Оценка<span>{{test.mark}}</span></li>
+                          <li class="task__info-item">Оценка<span>{{test.mark}}/5</span></li>
                           {% elif test.mark != None and test.mark <= 2 %}
-                          <li class="task__info-item">Оценка<span style="background-color:#fe3e57">{{test.mark}}</span></li>
+                          <li class="task__info-item">Оценка<span style="background-color:#fe3e57">{{test.mark}}/5</span></li>
                           {% else %}
                           <li class="task__info-item">Оценка<span style="background-color:#bbb">0/5</span></li>
                           {% endif %}
