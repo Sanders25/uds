@@ -174,8 +174,8 @@ def ManageTasks():
     user = db.session.query(Staff).filter(Staff.userId == current_user.id).first()
     subject = Subject.query.filter(Subject.staffId == user.id).first()
 
-    labs = Labwork.query.with_entities(Labwork.id, Labwork.name, LabworkDeadline.edgroup, LabworkDeadline.deadline).filter(Labwork.subject == subject.name).join(LabworkDeadline, and_(Labwork.id == LabworkDeadline.id, Labwork.subject == LabworkDeadline.subject)).all()
-    tests = Test.query.with_entities(Test.id, Test.name, TestDeadline.edgroup, TestDeadline.deadline).filter(Test.subject == subject.name).join(TestDeadline, and_(Test.id == TestDeadline.id, Test.subject == TestDeadline.subject)).all()
+    labs = Labwork.query.with_entities(Labwork.id, Labwork.name, LabworkDeadline.edgroup, func.to_char(LabworkDeadline.deadline, 'DD.MM.YYYY').label('deadline')).filter(Labwork.subject == subject.name).join(LabworkDeadline, and_(Labwork.id == LabworkDeadline.id, Labwork.subject == LabworkDeadline.subject)).all()
+    tests = Test.query.with_entities(Test.id, Test.name, TestDeadline.edgroup, func.to_char(TestDeadline.deadline, 'DD.MM.YYYY').label('deadline')).filter(Test.subject == subject.name).join(TestDeadline, and_(Test.id == TestDeadline.id, Test.subject == TestDeadline.subject)).all()
     return render_template('/staff/manage_tasks.html', labs=labs, tests=tests, subject=subject)
 
 @app.route('/edit_lab/<subject>/<group>/<id>', methods=['GET', 'POST'])
@@ -311,7 +311,7 @@ def student_tasks():
     #? Запрос, возвращающий всю информацию о контрольных, идущих у данного студента
     subq = TestPass.query.filter(TestPass.studentid == student.id).subquery()
     subq2 = TestDeadline.query.with_entities(TestDeadline.id, TestDeadline.subject, subq.c.mark, TestDeadline.deadline).outerjoin(subq, and_(subq.c.id == TestDeadline.id, subq.c.subject == TestDeadline.subject)).filter(TestDeadline.edgroup == student.edgroup).subquery()
-    tests = Test.query.with_entities(Test.id, Test.subject, Test.name.label('testName'), subq2.c.mark, ((subq2.c.mark * 100) / 5).label('percent'), subq2.c.deadline, Staff.name.label('instructor')).join(subq2, and_(subq2.c.id == Test.id, subq2.c.subject == Test.subject)).outerjoin(Subject, Test.subject == Subject.name).outerjoin(Staff, Subject.staffId == Staff.id).all()
+    tests = Test.query.with_entities(Test.id, Test.subject, Test.name.label('testName'), subq2.c.mark, ((subq2.c.mark * 100) / 5).label('percent'), func.to_char(subq2.c.deadline, 'DD.MM.YYYY').label('deadline'), Staff.name.label('instructor')).join(subq2, and_(subq2.c.id == Test.id, subq2.c.subject == Test.subject)).outerjoin(Subject, Test.subject == Subject.name).outerjoin(Staff, Subject.staffId == Staff.id).all()
     #?
 
     print(labworks)

@@ -35,14 +35,27 @@
                           </li>
                           {% if lab.mark != None and lab.mark > 2 %}
                           <li class="task__info-item">Оценка<span>{{lab.mark}}</span></li>
+                          {% elif lab.mark != None and lab.mark <= 2 %}
+                          <li class="task__info-item"">Оценка<span style="background-color:#fe3e57">{{lab.mark}}</span></li>
                           {% else %}
-                          <li class="task__info-item"">Оценка<span style="background-color:#fe3e57">0/5</span></li>
+                          <li class="task__info-item" >Оценка<span style="background-color:#bbb">0/5</span></li>
                           {% endif %}
                           </ul>                
-                          {% if lab.percent != None %}
-                          <div class="task__progress"><span>{{lab.percent}}%</span></div>
-                          {% else %}
-                          <div class="task__progress"><span>0%</span></div>
+                          {% if lab.percent != None and lab.percent > 40 %}
+                          <div class="task__progress"><span>{{lab.percent}}%</span>
+                            <div class="task__progress__bar" style="width: {{lab.percent}}%;"> 
+                            </div>
+                        </div>
+                          {% elif lab.percent != None and lab.percent <= 40 %}
+                          <div class="task__progress"><span>{{lab.percent}}%</span>
+                            <div class="task__progress__bar" style="width: {{lab.percent}}%; background-color:#fe3e57;"> 
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="task__progress"><span>0%</span>
+                            <div class="task__progress__bar" style="width: {{lab.percent}}%;"> 
+                            </div>
+                        </div>
                           {% endif %}
                       </div>
                       {% if lab.mark != None and lab.mark > 2 %}
@@ -84,14 +97,27 @@
                           </li>
                           {% if test.mark != None and test.mark > 2 %}
                           <li class="task__info-item">Оценка<span>{{test.mark}}</span></li>
+                          {% elif test.mark != None and test.mark <= 2 %}
+                          <li class="task__info-item">Оценка<span style="background-color:#fe3e57">{{test.mark}}</span></li>
                           {% else %}
-                          <li class="task__info-item"">Оценка<span style="background-color:#fe3e57">0/5</span></li>
+                          <li class="task__info-item">Оценка<span style="background-color:#bbb">0/5</span></li>
                           {% endif %}
                           </ul>                
-                          {% if test.percent != None %}
-                          <div class="task__progress"><span>{{test.percent}}%</span></div>
-                          {% else %}
-                          <div class="task__progress"><span>0%</span></div>
+                          {% if test.percent != None and test.percent > 40 %}
+                          <div class="task__progress"><span>{{test.percent}}%</span>
+                            <div class="task__progress__bar" style="width: {{test.percent}}%;"> 
+                            </div>
+                        </div>
+                          {% elif test.percent != None and test.percent <= 40 %}
+                          <div class="task__progress"><span>{{test.percent}}%</span>
+                            <div class="task__progress__bar" style="width: {{test.percent}}%; background-color:#fe3e57;"> 
+                            </div>
+                        </div>
+                        {% else %}
+                        <div class="task__progress"><span>0%</span>
+                            <div class="task__progress__bar" style="width: {{test.percent}}%;"> 
+                            </div>
+                        </div>
                           {% endif %}
                       </div>
                       {% if test.mark != None and test.mark > 2 %}

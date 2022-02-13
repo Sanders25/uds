@@ -450,13 +450,17 @@ tbody td a {
 }
 
 .task__label {
-  padding: 1px 15px;
+  padding: 1px 8px;
   border: 1px solid #ccc;
   border-radius: 8px;
   cursor: pointer;
   -webkit-transition: all .3s ease-out;
   -o-transition: all .3s ease-out;
   transition: all .3s ease-out;
+}
+
+.task__label + .task__label {
+  margin-left: 5px;
 }
 
 .task__label a {
@@ -555,13 +559,12 @@ tbody td a {
           transform: translate(-50%, -50%);
 }
 
-.task__progress::after {
+.task__progress__bar {
   content: "";
   position: absolute;
   left: 0;
   height: 40px;
   background-color: #68e393;
-  width: 70%;
   border-radius: 16px;
 }
 
